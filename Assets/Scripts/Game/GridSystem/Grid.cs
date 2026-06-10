@@ -12,7 +12,7 @@ namespace Game.GridSystem
         public Vector2Int CurrentPosition {get; private set;}
         public Vector2Int TargetPosition {get; private set;}
         
-        public Grid(int width, int height)
+        public void SetupGrid(int width, int height)
         {
             Width = width;
             Height = height;
