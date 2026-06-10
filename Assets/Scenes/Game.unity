@@ -230,7 +230,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -511,6 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c57db3e937483487116c1a9c47d57a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Board.GameBoard
+  isVertical: 1
   tileConfig: {fileID: 11400000, guid: e46508d923e0d11439afd40a8cba4b6c, type: 2}
   gridPrefab: {fileID: 6176338404713971117, guid: 3d5439e1bd7dbec4792b29f32e604055, type: 3}
 --- !u!4 &1232254731
