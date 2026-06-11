@@ -6,11 +6,11 @@ namespace Game.GridSystem
     public class Grid
     {
         public Tile[,] GameGrid { get; private set; }
-        public int Width {get; private set;}
-        public int Height {get; private set;}
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
-        public Vector2Int CurrentPosition {get; private set;}
-        public Vector2Int TargetPosition {get; private set;}
+        public Vector2Int CurrentPosition { get; private set; }
+        public Vector2Int TargetPosition { get; private set; }
         
         public void SetupGrid(int width, int height)
         {

@@ -1,4 +1,5 @@
 using Game.Board;
+using Game.GridSystem;
 using Game.Tiles;
 using Game.Utils;
 using ResurcesLoading;
@@ -21,6 +22,7 @@ namespace DI
             builder.RegisterInstance(loader);    
             builder.Register<SetupCamera>(Lifetime.Singleton);
             builder.Register<TilePool>(Lifetime.Singleton);
+            builder.Register<GameDebug>(Lifetime.Singleton);
         }
     }
 }

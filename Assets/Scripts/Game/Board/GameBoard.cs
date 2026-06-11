@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.GridSystem;
 using Game.Tiles;
 using Game.Utils;
 using UnityEngine;
@@ -13,18 +14,22 @@ namespace Game.Board
         
         [SerializeField] private TileConfig tileConfig;
         [SerializeField] private GameObject gridPrefab;
+
+        [SerializeField] private bool isDebugging;
         
         private TilePool _tilePool;
         private readonly List<Tile> _tilesToRefill = new List<Tile>();
         private Grid _grid;
         private SetupCamera _setupCamera;
+        private GameDebug _gameDebug;
         
         [Inject] 
-        private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool)
+        private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool,  GameDebug gameDebug)
         {
             _grid = grid;
             _setupCamera = setupCamera;
             _tilePool = tilePool;
+            _gameDebug = gameDebug;
         }
 
         private void Start()
@@ -32,6 +37,9 @@ namespace Game.Board
             _grid.SetupGrid(10, 10);
             CreateBoard();
             _setupCamera.SetCamera(_grid.Width, _grid.Height, isVertical);
+            
+            if (isDebugging)
+                _gameDebug.ShowDebug(transform);
         }
 
         public void CreateBoard()

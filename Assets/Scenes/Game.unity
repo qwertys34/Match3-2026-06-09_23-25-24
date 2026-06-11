@@ -515,6 +515,7 @@ MonoBehaviour:
   isVertical: 0
   tileConfig: {fileID: 11400000, guid: e46508d923e0d11439afd40a8cba4b6c, type: 2}
   gridPrefab: {fileID: 6176338404713971117, guid: 3d5439e1bd7dbec4792b29f32e604055, type: 3}
+  isDebugging: 1
 --- !u!4 &1232254731
 Transform:
   m_ObjectHideFlags: 0
