@@ -14,15 +14,17 @@ namespace Game.Board
         [SerializeField] private TileConfig tileConfig;
         [SerializeField] private GameObject gridPrefab;
         
+        private TilePool _tilePool;
         private readonly List<Tile> _tilesToRefill = new List<Tile>();
         private Grid _grid;
         private SetupCamera _setupCamera;
         
         [Inject] 
-        private void Construct(Grid grid, SetupCamera setupCamera)
+        private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool)
         {
             _grid = grid;
             _setupCamera = setupCamera;
+            _tilePool = tilePool;
         }
 
         private void Start()
@@ -45,11 +47,10 @@ namespace Game.Board
                 {
                     if (_grid.GetValue(x, y)) continue;
 
-                    var tile = Instantiate(gridPrefab, transform);
-                    tile.transform.position = _grid.GridToWorld(x, y);
-                    var tileComponent = tile.GetComponent<Tile>();
-                    tileComponent.SetTileConfig(tileConfig);
-                    _grid.SetValue(x, y, tileComponent);
+                    var tile = _tilePool.GetTile(_grid.GridToWorld(x, y), transform);
+                    _grid.SetValue(x, y, tile);
+                    tile.gameObject.SetActive(true);
+                    _tilesToRefill.Add(tile);    
                 }
             }   
         }

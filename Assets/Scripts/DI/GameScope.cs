@@ -1,5 +1,7 @@
 using Game.Board;
+using Game.Tiles;
 using Game.Utils;
+using ResurcesLoading;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -10,12 +12,15 @@ namespace DI
     public class GameScope : LifetimeScope
     {
         [SerializeField] private GameBoard gameBoard;
+        [SerializeField] private GameResurcesLoader loader;
         
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<Grid>(Lifetime.Singleton);
-            builder.RegisterInstance(gameBoard);
+            builder.RegisterInstance(gameBoard);    
+            builder.RegisterInstance(loader);    
             builder.Register<SetupCamera>(Lifetime.Singleton);
+            builder.Register<TilePool>(Lifetime.Singleton);
         }
     }
 }
