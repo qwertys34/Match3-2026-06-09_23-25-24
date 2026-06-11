@@ -11,7 +11,7 @@ namespace Game.Tiles
     }
 }
 
-[CreateAssetMenu(fileName = "TileConfig", menuName = "Config/TileConfig")]
+[CreateAssetMenu(fileName = "TileConfig", menuName = "Configs/TileConfig")]
 public class TileConfig : ScriptableObject
 {
     [SerializeField] private Sprite _sprite;

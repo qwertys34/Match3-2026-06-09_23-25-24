@@ -513,9 +513,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Board.GameBoard
   isVertical: 0
+  levelConfig: {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
   tileConfig: {fileID: 11400000, guid: e46508d923e0d11439afd40a8cba4b6c, type: 2}
   gridPrefab: {fileID: 6176338404713971117, guid: 3d5439e1bd7dbec4792b29f32e604055, type: 3}
-  isDebugging: 1
+  isDebugging: 0
 --- !u!4 &1232254731
 Transform:
   m_ObjectHideFlags: 0
@@ -561,7 +562,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResurcesLoading.GameResurcesLoader
   tilePrefab: {fileID: 6176338404713971117, guid: 3d5439e1bd7dbec4792b29f32e604055, type: 3}
+  blanTilePrefab: {fileID: 6176338404713971117, guid: 3d5439e1bd7dbec4792b29f32e604055, type: 3}
   tileSetConfig: {fileID: 11400000, guid: 6abbf657acb522041a2c259872ffc4c9, type: 2}
+  blankConfig: {fileID: 11400000, guid: dbf8d68417f3ce5469a98062e96bc162, type: 2}
 --- !u!4 &1813616412
 Transform:
   m_ObjectHideFlags: 0
