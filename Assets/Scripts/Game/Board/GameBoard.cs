@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Game.GridSystem;
 using Game.Tiles;
 using Game.Utils;
+using Input;
 using Levels;
 using UnityEngine;
 using VContainer;
@@ -26,6 +27,8 @@ namespace Game.Board
         private GameDebug _gameDebug;
         private BlankTilesSetup _blankTilesSetup;
         
+        private InputReader _inputs;
+        
         [Inject] 
         private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool,  GameDebug gameDebug, BlankTilesSetup blankTilesSetup)
         {
@@ -42,6 +45,10 @@ namespace Game.Board
             _blankTilesSetup.SetupBlanks(levelConfig);
             CreateBoard();
             _setupCamera.SetCamera(_grid.Width, _grid.Height, isVertical);
+
+            _inputs = new InputReader();
+            _inputs.EnableInput(true);
+            _inputs.Click += () => Debug.Log(_inputs.Position);
             
             if (isDebugging)
                 _gameDebug.ShowDebug(transform);
