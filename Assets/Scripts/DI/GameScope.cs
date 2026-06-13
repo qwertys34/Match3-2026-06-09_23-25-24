@@ -1,3 +1,4 @@
+using Animations;
 using Game.Board;
 using Game.GridSystem;
 using Game.Tiles;
@@ -21,6 +22,7 @@ namespace DI
             builder.Register<Grid>(Lifetime.Singleton);
             builder.RegisterInstance(gameBoard);    
             builder.RegisterInstance(loader);    
+            builder.Register<IAnimation, AnimationManager>(Lifetime.Singleton);
             builder.Register<BlankTilesSetup>(Lifetime.Singleton);
             builder.Register<SetupCamera>(Lifetime.Singleton);
             builder.Register<TilePool>(Lifetime.Singleton);
