@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Animations;
 using Game.Board;
+using Game.GridSystem;
 using StateMachine.States;
 
 namespace StateMachine
@@ -10,12 +12,18 @@ namespace StateMachine
         private List<IState> _states;
         private IState _currentState;
         private GameBoard _gameBoard;
-
-        public StateMachine(GameBoard gameBoard)
+        private Grid _grid;
+        private IAnimation _animation;
+        
+        public StateMachine(GameBoard gameBoard,  Grid grid,  IAnimation animation)
         {
             _gameBoard = gameBoard;
+            _grid = grid;
+            _animation = animation;
             _states = new List<IState>() {
-                new PrepareState(this, _gameBoard)
+                new PrepareState(this, _gameBoard),
+                new PlayerTurnState(this, _animation, _grid), 
+                new SwapTilesState(this, _grid, _animation),
             };
             
             _currentState = _states[0];

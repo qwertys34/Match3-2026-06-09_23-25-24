@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Game.Board;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace StateMachine.States
         public void Enter()
         {
             _gameBoard.CreateBoard();
+            _stateMachine.SwitchState<PlayerTurnState>();
         }
 
         public void Exit()

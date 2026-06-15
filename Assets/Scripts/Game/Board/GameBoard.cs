@@ -3,7 +3,6 @@ using Animations;
 using Game.GridSystem;
 using Game.Tiles;
 using Game.Utils;
-using Input;
 using Levels;
 using UnityEngine;
 using VContainer;
@@ -29,7 +28,6 @@ namespace Game.Board
         private BlankTilesSetup _blankTilesSetup;
         private IAnimation _animation;
         
-        private InputReader _inputs;
         
         [Inject] 
         private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool,  GameDebug gameDebug, BlankTilesSetup blankTilesSetup, IAnimation animation)
@@ -47,10 +45,6 @@ namespace Game.Board
             _grid.SetupGrid(levelConfig.Width, levelConfig.Height);
             _blankTilesSetup.SetupBlanks(levelConfig);
             _setupCamera.SetCamera(_grid.Width, _grid.Height, isVertical);
-
-            _inputs = new InputReader();
-            _inputs.EnableInput(true);
-            _inputs.Click += Test;
             
             if (isDebugging)
                 _gameDebug.ShowDebug(transform);
@@ -63,16 +57,6 @@ namespace Game.Board
                 var objTile = tile.gameObject;
                 _animation.Reveal(objTile, 1f);
             }
-        }
-        
-        private void Test()
-        {
-            Debug.Log(_inputs.Position);
-        }
-        
-        private void OnDisable()
-        {
-            _inputs.Click -= Test;
         }
 
         public void CreateBoard()

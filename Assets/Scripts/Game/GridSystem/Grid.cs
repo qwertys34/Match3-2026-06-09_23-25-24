@@ -26,7 +26,7 @@ namespace Game.GridSystem
 
         public Vector2Int WorldToGrid(Vector3 worldPosition)
         {
-            return Vector2Int.FloorToInt(new Vector2(worldPosition.x, worldPosition.y));
+            return Vector2Int.RoundToInt(new Vector2(worldPosition.x, worldPosition.y));
         }
 
         public void SetValue(int x, int y, Tile tile)

@@ -27,7 +27,7 @@ namespace Input
                 _inputs.Player.Disable();
         }
 
-        public Vector2 Position => _inputs.Player.Select.ReadValue<Vector2>();
+        public Vector2 Position() => _inputs.Player.Select.ReadValue<Vector2>();
         
         private void OnClick(InputAction.CallbackContext context)
         {

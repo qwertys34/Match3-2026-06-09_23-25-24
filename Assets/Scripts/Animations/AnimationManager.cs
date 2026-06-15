@@ -22,11 +22,10 @@ namespace Animations
         public async UniTask HideTile(GameObject target)
         {
             _cts = new CancellationTokenSource();
-            target.transform.DOScale(Vector3.zero, 0.05f).SetEase(Ease.OutBounce);
+            await target.transform.DOScale(Vector3.zero, 0.05f)
+                .SetEase(Ease.OutBounce).WithCancellation(_cts.Token);
             target.SetActive(false);
             target.transform.localScale = Vector3.one;
-            await UniTask.Delay(TimeSpan.FromSeconds(0.05f), _cts.IsCancellationRequested);
-            _cts.Cancel();
         }
 
         public void DoPunchAnimate(GameObject target, Vector3 scale, float duretion)
@@ -52,6 +51,12 @@ namespace Animations
         public void Dispose()
         {
             _cts?.Dispose();
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetAllStatics()
+        {
+            DOTween.Clear();
         }
     }
 }
