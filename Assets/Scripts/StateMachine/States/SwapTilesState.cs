@@ -43,7 +43,10 @@ namespace StateMachine.States
             _grid.SetValue(target.x, target.y, currentTile);
             _grid.SetValue(current.x, current.y, targetTile);
             
-            await UniTask.WaitForSeconds(0.5f, _cts.IsCancellationRequested);
+            _animation.AnimateTile(currentTile, 1f);
+            _animation.AnimateTile(targetTile, 1f);
+            
+            await UniTask.WaitForSeconds(0.2f, _cts.IsCancellationRequested);
         }
 
         private void AnimateTile(Tile tile, Vector2Int position)
