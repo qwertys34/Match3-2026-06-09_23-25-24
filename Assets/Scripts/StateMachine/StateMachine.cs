@@ -3,6 +3,7 @@ using System.Linq;
 using Animations;
 using Game.Board;
 using Game.GridSystem;
+using Game.MatchTiles;
 using StateMachine.States;
 
 namespace StateMachine
@@ -14,16 +15,20 @@ namespace StateMachine
         private GameBoard _gameBoard;
         private Grid _grid;
         private IAnimation _animation;
+        private MatchFinder _matchFinder;
         
-        public StateMachine(GameBoard gameBoard,  Grid grid,  IAnimation animation)
+        public StateMachine(GameBoard gameBoard,  Grid grid,  IAnimation animation, MatchFinder matchFinder)
         {
             _gameBoard = gameBoard;
             _grid = grid;
             _animation = animation;
+            _matchFinder = matchFinder;
             _states = new List<IState>() {
                 new PrepareState(this, _gameBoard),
                 new PlayerTurnState(this, _animation, _grid), 
-                new SwapTilesState(this, _grid, _animation),
+                new SwapTilesState(this, _grid, _animation, _matchFinder),
+                new RemoveTileState(this, _grid, _animation, _matchFinder),
+                new RefillGridState(this)
             };
             
             _currentState = _states[0];

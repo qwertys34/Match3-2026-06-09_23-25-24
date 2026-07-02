@@ -1,9 +1,9 @@
 using Animations;
 using Game.Board;
 using Game.GridSystem;
+using Game.MatchTiles;
 using Game.Tiles;
 using Game.Utils;
-using Levels;
 using ResurcesLoading;
 using UnityEngine;
 using VContainer;
@@ -27,6 +27,7 @@ namespace DI
             builder.Register<SetupCamera>(Lifetime.Singleton);
             builder.Register<TilePool>(Lifetime.Singleton);
             builder.Register<GameDebug>(Lifetime.Singleton);
+            builder.Register<MatchFinder>(Lifetime.Singleton);
         }
     }
 }

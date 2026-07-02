@@ -18,5 +18,7 @@ namespace Game.Tiles
         }
         
         public void SetIsInteractable(bool value) => IsInteractable = value;
+        
+        public void SetMatch(bool value) => IsMatched = value;
     }
 }
