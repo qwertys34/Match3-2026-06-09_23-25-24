@@ -5,6 +5,7 @@ using Animations;
 using Cysharp.Threading.Tasks;
 using Game.GridSystem;
 using Game.MatchTiles;
+using Game.Score;
 using Game.Tiles;
 
 namespace StateMachine.States
@@ -16,19 +17,22 @@ namespace StateMachine.States
         private IAnimation _animation;
         private CancellationTokenSource _cts;
         private MatchFinder _matchFinder;
+        private ScoreCalculator _scoreCalculator;
         
-        public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation,  MatchFinder matchFinder)
+        public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation,  MatchFinder matchFinder,
+            ScoreCalculator scoreCalculator)
         {
             _switcher = switcher;
             _grid = grid;
             _animation = animation;
             _matchFinder = matchFinder;
+            _scoreCalculator = scoreCalculator;
         }
         
         public async void Enter()
         {
             _cts = new CancellationTokenSource();
-            // score++
+            _scoreCalculator.CalculateScoreToAdd(_matchFinder.CurrentMatchResult.MatchDirection);
             await RemoveTiles(_matchFinder.TilesToRemove);
             _switcher.SwitchState<RefillGridState>();
         }

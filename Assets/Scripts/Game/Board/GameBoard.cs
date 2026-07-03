@@ -15,7 +15,8 @@ namespace Game.Board
     {
         [SerializeField] private bool isVertical;
         [SerializeField] private LevelConfig levelConfig;
-        
+
+
         [SerializeField] private TileConfig tileConfig;
         [SerializeField] private GameObject gridPrefab;
 
@@ -30,6 +31,7 @@ namespace Game.Board
         private IAnimation _animation;
         private MatchFinder _matchFinder;
         
+        public LevelConfig LevelConfig => levelConfig;
         
         [Inject] 
         private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool, GameDebug gameDebug,
