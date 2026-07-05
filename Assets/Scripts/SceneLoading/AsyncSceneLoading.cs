@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -22,13 +23,15 @@ namespace SceneLoading
         {
             cts = new CancellationTokenSource();
             LoadingIsDone(false);
-            await UniTask.Delay(2000);
-            var loadedScene = await Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive)
+            await UniTask.Delay(TimeSpan.FromSeconds(2), cts.IsCancellationRequested);
+           var loadedScene = await Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive)
                 .WithCancellation(cts.Token);
             SceneManager.SetActiveScene(loadedScene.Scene);
-            _loadedScenes.TryAdd(sceneName, loadedScene); // если нет - добавляем
+            _loadedScenes.TryAdd(sceneName, loadedScene); 
             cts.Cancel();
         }
+        
+        
 
         public async UniTask UnloadAsync(string sceneName)
         {
@@ -40,5 +43,6 @@ namespace SceneLoading
         }
 
         public void LoadingIsDone(bool value) => loadingScreen.SetActiveScreen(!value);
+        
     }
 }
