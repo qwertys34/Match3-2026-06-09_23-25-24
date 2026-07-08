@@ -18,12 +18,6 @@ namespace Boot
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             DOTween.SetTweensCapacity(5000, 100);
             await _sceneLoading.LoadAsync(Scenes.MENU);
-            try
-            {
-                
-            }
-            catch (OperationCanceledException)
-            { }
         }
     }
 }

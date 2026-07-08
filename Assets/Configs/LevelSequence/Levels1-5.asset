@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Menu.Levels.LevelSequenceConfig
   levelConfigs:
   - {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
-  - {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
-  - {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
-  - {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
-  - {fileID: 11400000, guid: add311dfecdd2de4ea8527b3e998f89d, type: 2}
+  - {fileID: 11400000, guid: a4137cacddd831640a1f6cfca97db476, type: 2}
+  - {fileID: 11400000, guid: 5d25d0bc2409fc24fa536889d6e6f3cb, type: 2}
+  - {fileID: 11400000, guid: 82fd5c18810beb149a95924553c324a4, type: 2}
+  - {fileID: 11400000, guid: f1c0f28b46d60344d8c0106b25030dd8, type: 2}

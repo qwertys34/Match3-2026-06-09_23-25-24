@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Animations;
+using Audio;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.MatchTiles;
@@ -22,11 +23,12 @@ namespace StateMachine.States
         private TilePool _tilePool;
         private Transform _parent;
         private GameProgress _gameProgress;
+        private AudioManager _audioManager;
 
         private List<Vector2Int> _tilesToRefillPos = new List<Vector2Int>(); 
         
-        public RefillGridState(IStateSwitcher switcher, Grid grid, IAnimation animation,
-            MatchFinder matchFinder, TilePool tilePool, Transform parent,  GameProgress gameProgress)
+        public RefillGridState(IStateSwitcher switcher, Grid grid, IAnimation animation, MatchFinder matchFinder,
+            TilePool tilePool, Transform parent,  GameProgress gameProgress, AudioManager audioManager)
         {
             _stateSwitcher = switcher;
             _grid = grid;
@@ -35,6 +37,7 @@ namespace StateMachine.States
             _tilePool = tilePool;
             _parent = parent;
             _gameProgress = gameProgress;
+            _audioManager =  audioManager;
         }
 
         public void Dispose() => _cts?.Dispose();
@@ -46,12 +49,12 @@ namespace StateMachine.States
             if (_matchFinder.CheckBoardForMatches(_grid))
             {
                 _stateSwitcher.SwitchState<RemoveTileState>();
-                // play sound
+                _audioManager.PlayMatch();
             }
             else
             {
                 CheckEndGame();
-                // play sound
+                _audioManager.PlayNoMatch();
             }
         }
 
@@ -76,7 +79,7 @@ namespace StateMachine.States
                     }
                 }
             }
-            // play sound
+            _audioManager.PlayWhoosh();
             await UniTask.Delay(TimeSpan.FromSeconds(0.3f), _cts.IsCancellationRequested);
             _cts.Cancel();
         }
@@ -91,7 +94,9 @@ namespace StateMachine.States
                     var tile = _tilePool.GetTile(_grid.GridToWorld(x,y), _parent);
                     _grid.SetValue(x, y, tile);
                     tile.gameObject.SetActive(true);
-                    await _animation.Reveal(tile.gameObject, 0.1f);
+                    await _animation.Reveal(tile.gameObject, 0.2f);
+                    _audioManager.PlayPop();
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.1f), _cts.IsCancellationRequested);
                 }
             }
         }

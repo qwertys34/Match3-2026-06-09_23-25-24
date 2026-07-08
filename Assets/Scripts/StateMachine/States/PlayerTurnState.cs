@@ -1,5 +1,6 @@
 using System;
 using Animations;
+using Audio;
 using Game.Tiles;
 using Input;
 using UnityEngine;
@@ -15,12 +16,14 @@ namespace StateMachine.States
         private readonly Camera _camera;
         private readonly InputReader _inputReader;
         private readonly IAnimation _animation;
+        private AudioManager _audioManager;
         
-        public PlayerTurnState(IStateSwitcher stateSwitcher, IAnimation animation, Grid grid)
+        public PlayerTurnState(IStateSwitcher stateSwitcher, IAnimation animation, Grid grid, AudioManager audioManager)
         {
             _stateSwitcher = stateSwitcher;
             _animation = animation;
             _grid = grid;
+            _audioManager = audioManager;
             _camera = Camera.main;
             _inputReader = new InputReader();
             _inputReader.Click += OnTileClick;
@@ -35,13 +38,13 @@ namespace StateMachine.States
                 return;
             if (_grid.CurrentPosition == _emptyPosition)
             {
-                // play sound
+                _audioManager.PlayClick();
                 _grid.SetCurrentPosition(clickPosition);
                 _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1.2f);
             }
             else if (_grid.CurrentPosition == clickPosition)
             {
-                // play sound
+                _audioManager.PlayClick(); // _audioManager.PlayDeselect();
                 DeselectTile();
             }
             else if (_grid.CurrentPosition != clickPosition && IsSwappable(

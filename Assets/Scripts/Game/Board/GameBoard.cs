@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using Animations;
-using Game.GridSystem;
 using Game.MatchTiles;
 using Game.Tiles;
-using Game.Utils;
-using Levels;
 using UnityEngine;
 using VContainer;
 using Grid = Game.GridSystem.Grid;
@@ -13,48 +10,25 @@ namespace Game.Board
 {
     public class GameBoard : MonoBehaviour
     {
-        [SerializeField] private bool isVertical;
-        [SerializeField] private LevelConfig levelConfig;
-
-
-        [SerializeField] private TileConfig tileConfig;
-        [SerializeField] private GameObject gridPrefab;
-
-        [SerializeField] private bool isDebugging;
+        private readonly List<Tile> _tilesToRefill = new();
         
-        private TilePool _tilePool;
-        private readonly List<Tile> _tilesToRefill = new List<Tile>();
+        
         private Grid _grid;
-        private SetupCamera _setupCamera;
-        private GameDebug _gameDebug;
+        private TilePool _tilePool;
         private BlankTilesSetup _blankTilesSetup;
         private IAnimation _animation;
         private MatchFinder _matchFinder;
         
-        public LevelConfig LevelConfig => levelConfig;
-        
-        [Inject] 
-        private void Construct(Grid grid, SetupCamera setupCamera, TilePool tilePool, GameDebug gameDebug,
+        [Inject] private void Construct(Grid grid, TilePool tilePool,
             BlankTilesSetup blankTilesSetup, IAnimation animation, MatchFinder matchFinder)
         {
             _grid = grid;
-            _setupCamera = setupCamera;
             _tilePool = tilePool;
-            _gameDebug = gameDebug;
-            _blankTilesSetup = blankTilesSetup;
             _animation = animation;
+            _blankTilesSetup = blankTilesSetup;
             _matchFinder = matchFinder;
         }
-
-        private void Awake()
-        {
-            _grid.SetupGrid(levelConfig.Width, levelConfig.Height);
-            _blankTilesSetup.SetupBlanks(levelConfig);
-            _setupCamera.SetCamera(_grid.Width, _grid.Height, isVertical);
-            
-            if (isDebugging)
-                _gameDebug.ShowDebug(transform);
-        }
+        
 
         private void RevealTiles()
         {

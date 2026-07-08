@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Animations;
+using Audio;
 using Cysharp.Threading.Tasks;
 using Game.GridSystem;
 using Game.MatchTiles;
@@ -18,15 +19,17 @@ namespace StateMachine.States
         private CancellationTokenSource _cts;
         private MatchFinder _matchFinder;
         private ScoreCalculator _scoreCalculator;
+        private AudioManager _audioManager;
         
         public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation,  MatchFinder matchFinder,
-            ScoreCalculator scoreCalculator)
+            ScoreCalculator scoreCalculator,  AudioManager audioManager)
         {
             _switcher = switcher;
             _grid = grid;
             _animation = animation;
             _matchFinder = matchFinder;
             _scoreCalculator = scoreCalculator;
+            _audioManager = audioManager;
         }
         
         public async void Enter()
@@ -41,7 +44,7 @@ namespace StateMachine.States
         {
             foreach (var tile in tilesToRemove)
             {
-                // play sound
+                _audioManager.PlayRemove();
                 _grid.SetValue(tile.transform.position, null);
                 await _animation.HideTile(tile.gameObject);
                 // FX

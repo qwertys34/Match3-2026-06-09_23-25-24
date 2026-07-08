@@ -8,6 +8,7 @@ namespace Menu.Levels
     public class SetupLevelSequence
     {
         public LevelSequenceConfig CurrentLevelSequence { get; private set; }
+        private AsyncOperationHandle<LevelSequenceConfig> _currentHandle;
 
         public async UniTask Setup(int currentLevel)
         {
@@ -25,12 +26,16 @@ namespace Menu.Levels
         
         private async UniTask LoadLevels(string key)
         {
-            AsyncOperationHandle<LevelSequenceConfig> levels = Addressables.LoadAssetAsync<LevelSequenceConfig>(key);
-            await levels.ToUniTask();
-            if (levels.Status == AsyncOperationStatus.Succeeded)
+            if (_currentHandle.IsValid())
             {
-                CurrentLevelSequence = levels.Result;
-                Addressables.Release(levels);
+                Addressables.Release(_currentHandle);
+            }
+
+            _currentHandle = Addressables.LoadAssetAsync<LevelSequenceConfig>(key);
+            await _currentHandle.ToUniTask();
+            if (_currentHandle.Status == AsyncOperationStatus.Succeeded)
+            {
+                CurrentLevelSequence = _currentHandle.Result;
             }
         }
     }
