@@ -8,6 +8,7 @@ using Game.MatchTiles;
 using Game.Score;
 using Game.Tiles;
 using Game.UI;
+using Game.Utils;
 using StateMachine.States;
 
 namespace StateMachine
@@ -25,10 +26,13 @@ namespace StateMachine
         private ScoreCalculator _scoreCalculator;
         private AudioManager _audioManager;
         private EndGamePanelView _endGamePanelView;
+        private BackgroundTilesSetup _backgroundTilesSetup;
+        private FXPool _fxPool;
         
         public StateMachine(GameBoard gameBoard,  Grid grid,  IAnimation animation, MatchFinder matchFinder,
             TilePool tilePool,  GameProgress gameProgress,  ScoreCalculator scoreCalculator,
-            AudioManager audioManager, EndGamePanelView endGamePanelView)
+            AudioManager audioManager, EndGamePanelView endGamePanelView, 
+            BackgroundTilesSetup backgroundTilesSetup, FXPool fxPool)
         {
             _gameBoard = gameBoard;
             _grid = grid;
@@ -39,11 +43,13 @@ namespace StateMachine
             _scoreCalculator = scoreCalculator;
             _audioManager = audioManager;
             _endGamePanelView = endGamePanelView;
+            _backgroundTilesSetup = backgroundTilesSetup;
+            _fxPool = fxPool;
             _states = new List<IState>() {
-                new PrepareState(this, _gameBoard),
+                new PrepareState(this, _gameBoard, _backgroundTilesSetup, _grid),
                 new PlayerTurnState(this, _animation, _grid, _audioManager), 
                 new SwapTilesState(this, _grid, _animation, _matchFinder, _gameProgress, _audioManager),
-                new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager),
+                new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager, _fxPool, _gameBoard),
                 new RefillGridState(this, _grid, _animation, _matchFinder, _tilePool,
                     gameBoard.transform, _gameProgress, _audioManager),
                 new WinState(_endGamePanelView),

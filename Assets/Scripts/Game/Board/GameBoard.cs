@@ -19,7 +19,7 @@ namespace Game.Board
         private IAnimation _animation;
         private MatchFinder _matchFinder;
         
-        [Inject] private void Construct(Grid grid, TilePool tilePool,
+        [Inject] public void Construct(Grid grid, TilePool tilePool,
             BlankTilesSetup blankTilesSetup, IAnimation animation, MatchFinder matchFinder)
         {
             _grid = grid;

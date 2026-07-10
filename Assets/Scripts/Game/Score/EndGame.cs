@@ -1,6 +1,9 @@
+using System;
 using Audio;
+using Cysharp.Threading.Tasks;
 using Data;
 using SceneLoading;
+using UnityEngine.UI;
 
 namespace Game.Score
 {
@@ -17,10 +20,12 @@ namespace Game.Score
             _gameData = gameData;
         }
 
-        public async void End(bool success)
+        public async void End(bool success, Button button)
         {
             if (success && _gameData.CurrentLevel.LevelNumber == _gameData.CurrentLevelIndex) 
                 _gameData.OpenNextLevel();
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            button.interactable = true;
             _audioManager.StopMusic();
             await sceneLoading.UnloadAsync(Scenes.GAME);
             await sceneLoading.LoadAsync(Scenes.MENU);

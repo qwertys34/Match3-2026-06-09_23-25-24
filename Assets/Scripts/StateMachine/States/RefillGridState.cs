@@ -45,7 +45,7 @@ namespace StateMachine.States
         public async void Enter()
         {
             await TileFall();
-            await CreateEmptyTiles();
+            await RefillTiles();
             if (_matchFinder.CheckBoardForMatches(_grid))
             {
                 _stateSwitcher.SwitchState<RemoveTileState>();
@@ -84,7 +84,7 @@ namespace StateMachine.States
             _cts.Cancel();
         }
 
-        private async UniTask CreateEmptyTiles()
+        private async UniTask RefillTiles()
         {
             for (int x = 0; x < _grid.Width; x++)
             {
@@ -94,9 +94,9 @@ namespace StateMachine.States
                     var tile = _tilePool.GetTile(_grid.GridToWorld(x,y), _parent);
                     _grid.SetValue(x, y, tile);
                     tile.gameObject.SetActive(true);
-                    await _animation.Reveal(tile.gameObject, 0.2f);
+                    await _animation.Reveal(tile.gameObject, 0.1f);
                     _audioManager.PlayPop();
-                    await UniTask.Delay(TimeSpan.FromSeconds(0.1f), _cts.IsCancellationRequested);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.05f), _cts.IsCancellationRequested);
                 }
             }
         }

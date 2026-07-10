@@ -32,7 +32,7 @@ namespace Game.MatchTiles
                 {
                     var tile =  grid.GetValue(x, y);
                     if (tile == null) continue;
-                    if (tile.IsMatched && tile.IsInteractable == false) continue; 
+                    if (tile.IsMatched || tile.IsInteractable == false) continue; // || or &&
                     MatchResult matchTiles = FindConnectedTiles(tile, grid);
                     if (matchTiles.ConectedTiles.Count < 3) continue;
                     
@@ -66,10 +66,10 @@ namespace Game.MatchTiles
             CheckDirection(tileGridPos, Vector2Int.right, grid, tile,  connectedTiles);
             CheckDirection(tileGridPos, Vector2Int.left, grid, tile,  connectedTiles);
             if (connectedTiles.Count == 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
                     MatchDirection.Horizontal); // у него почему-то Vector2Int.right
             if (connectedTiles.Count > 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
                     MatchDirection.LongHorizontal); // у него почему-то Vector2Int.right
             
             connectedTiles.Clear();
@@ -77,10 +77,10 @@ namespace Game.MatchTiles
             CheckDirection(tileGridPos, Vector2Int.up, grid, tile,  connectedTiles);
             CheckDirection(tileGridPos, Vector2Int.down, grid, tile,  connectedTiles);
             if (connectedTiles.Count == 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
                     MatchDirection.Vertical); // а тут у него Vector2Int.up
             if (connectedTiles.Count > 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
                     MatchDirection.LongVertical); // а тут у него Vector2Int.up
             
             connectedTiles.Clear();

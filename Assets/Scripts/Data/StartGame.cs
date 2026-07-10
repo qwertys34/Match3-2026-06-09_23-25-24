@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Audio;
 using Cysharp.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Data
             _gameData.SetCurrentLevel(level);
             _audioManager.StopMusic();
             _audioManager.PlayStopMusic();
+            await UniTask.Delay(TimeSpan.FromSeconds(1f)); // ???
             await _asyncSceneLoading.UnloadAsync(Scenes.MENU);
             await _asyncSceneLoading.LoadAsync(Scenes.GAME);
             _audioManager.PlayGameMusic();

@@ -43,7 +43,7 @@ namespace Game.UI
             _cts?.Dispose();
         }
 
-        private void ExitGame() => _endGame.End(_isWinCondition);
+        private void ExitGame() => _endGame.End(_isWinCondition, closeButton);
 
         public async void ShowEndGamePanel(bool isWinCondition)
         {
@@ -65,7 +65,6 @@ namespace Game.UI
                 _audioManager.PlayWin();
             else 
                 _audioManager.PlayLoose();
-            await UniTask.Delay(TimeSpan.FromSeconds(1f), _cts.IsCancellationRequested);
         }
     }
 }

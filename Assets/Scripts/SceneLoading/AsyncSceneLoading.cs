@@ -39,7 +39,7 @@ namespace SceneLoading
             var scene = _loadedScenes[sceneName];
             await Addressables.UnloadSceneAsync(scene).WithCancellation(cts.Token).AsUniTask();
             _loadedScenes.Remove(sceneName);    
-            cts.Cancel();
+            cts.Cancel(); 
         }
 
         public void LoadingIsDone(bool value) => loadingScreen.SetActiveScreen(!value);

@@ -17,7 +17,7 @@ namespace Game.EntryPoint
 {
     public class GameEntryPoint : IInitializable
     {
-        // BG Tile Setup
+        private BackgroundTilesSetup _backgroundTilesSetup;
         private LevelConfig _levelConfig;
         private ScoreCalculator _scoreCalculator;
         private BlankTilesSetup _blankTilesSetup;
@@ -32,7 +32,7 @@ namespace Game.EntryPoint
         private IAnimation _animation;
         private GameResurcesLoader _resurcesLoader;
         private SetupCamera _setupCamera;
-        // FX pool
+        private FXPool _fxPool;
         private IAsyncSceneLoading _sceneLoading;
         private StateMachine.StateMachine _stateMachine;
         private EndGamePanelView _endGamePanelView;
@@ -50,7 +50,7 @@ namespace Game.EntryPoint
             _setupCamera.SetCamera(_grid.Width, _grid.Height, false);
             _blankTilesSetup.SetupBlanks(_levelConfig);
             _stateMachine = new StateMachine.StateMachine(_gameBoard, _grid, _animation, _matchFinder, _tilePool,
-                _gameProgress, _scoreCalculator, _audioManager, _endGamePanelView);
+                _gameProgress, _scoreCalculator, _audioManager, _endGamePanelView, _backgroundTilesSetup, _fxPool);
             _sceneLoading.LoadingIsDone(true);
         }
 
@@ -58,7 +58,7 @@ namespace Game.EntryPoint
             GameProgress gameProgress, MatchFinder matchFinder, Grid grid, GameBoard gameBoard, GameDebug gameDebug,
             TilePool tilePool, GameData gameData, AudioManager audioManager, IAnimation animation,
             GameResurcesLoader resurcesLoader, SetupCamera setupCamera, IAsyncSceneLoading sceneLoading,
-            EndGamePanelView endGamePanelView)
+            EndGamePanelView endGamePanelView, BackgroundTilesSetup backgroundTilesSetup, FXPool fxPool)
         {
             _scoreCalculator = scoreCalculator;
             _blankTilesSetup = blankTilesSetup;
@@ -75,6 +75,8 @@ namespace Game.EntryPoint
             _setupCamera = setupCamera;
             _sceneLoading = sceneLoading;
             _endGamePanelView = endGamePanelView;
+            _backgroundTilesSetup = backgroundTilesSetup;
+            _fxPool =  fxPool;
         }
     }
 }

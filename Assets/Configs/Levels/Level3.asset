@@ -25,5 +25,5 @@ MonoBehaviour:
     yPos: 5
   levelNumber: 3
   levelType: 0
-  goalScore: 100
-  moves: 3
+  goalScore: 1000
+  moves: 11

@@ -33,8 +33,15 @@ namespace Menu.UI
             _startGame = startGame;
         }
 
-        private async void StartLevelButtonClick() => 
-            await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number-1]);
+        private async void StartLevelButtonClick()
+        {
+            if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1].LevelNumber <= 5)
+            {
+                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1]);
+            }
+            else 
+                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 6]);
+        }
         
         public void SetNumber(int value) => Number = Mathf.Clamp(value, 1, 10);
         

@@ -9,7 +9,7 @@ namespace Game.Utils
         public void SetCamera(int width, int height,  bool isVertical)
         {
             var xPos = (width / 2f) - 0.5f;
-            var yPos = (height / 2f);
+            var yPos = (height / 2f) + 0.2f; 
             Camera.main.transform.position = new Vector3(xPos, yPos, -11f);
             _isVertical =  isVertical;
             Camera.main.orthographicSize = GetOrthoSize(width, height);
