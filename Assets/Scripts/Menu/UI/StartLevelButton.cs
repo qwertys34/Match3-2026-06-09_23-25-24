@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Data;
 using Menu.Levels;
 using TMPro;
@@ -35,12 +34,13 @@ namespace Menu.UI
 
         private async void StartLevelButtonClick()
         {
-            if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1].LevelNumber <= 5)
+            /*if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1].LevelNumber <= 5)
             {
                 await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1]);
             }
             else 
-                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 6]);
+                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 6]);*/
+            await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1]);
         }
         
         public void SetNumber(int value) => Number = Mathf.Clamp(value, 1, 10);
