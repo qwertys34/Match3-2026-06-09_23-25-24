@@ -36,7 +36,7 @@ namespace Game.Tiles
 
         public Tile CreateBlankTile(Vector3 position, Transform parent)
         {
-            var blankPrefab = _objectResolver.Instantiate(_gameResurcesLoader.BlankTilePrefab,
+            var blankPrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
                 position, Quaternion.identity, parent);
             var blankTile = blankPrefab.GetComponent<Tile>();
             blankTile.SetTileConfig(_gameResurcesLoader.BlankConfig);
@@ -53,7 +53,7 @@ namespace Game.Tiles
             return tile;
         }
 
-        private TileConfig GetRandomTileConfig() => _gameResurcesLoader.TileSetConfig
-            .Set[Random.Range(0, _gameResurcesLoader.TileSetConfig.Set.Count)];
+        private TileConfig GetRandomTileConfig() => _gameResurcesLoader.CurrentTileSet[Random
+            .Range(0, _gameResurcesLoader.CurrentTileSet.Count)];
     }
 }

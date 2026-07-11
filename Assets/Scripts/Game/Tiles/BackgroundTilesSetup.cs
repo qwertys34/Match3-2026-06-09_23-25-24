@@ -43,7 +43,7 @@ namespace Game.Tiles
                     if (_blankTilesSetup.Blanks[x, y]) continue;
                     var backgroundTile = CreateBackgroundTile(x, y, parent);
                     var delay = Random.Range(0.8f, 1.5f);
-                    _animation.Reveal(backgroundTile, delay);
+                    _ = _animation.Reveal(backgroundTile, delay);
                 }
             }
             await UniTask.Delay(TimeSpan.FromSeconds(1.5f), _cts.IsCancellationRequested);
@@ -56,9 +56,9 @@ namespace Game.Tiles
                 new Vector3(x, y, 0.1f), Quaternion.identity, parent);
 
             if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0)
-                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.BlackBackgroundTileSprite;
+                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.LitghBgTileSprite;
             else 
-                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.WhiteBackgroundTileSprite;
+                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.DarkBgTileSprite;
             return backgroundTile;
         }
     }
