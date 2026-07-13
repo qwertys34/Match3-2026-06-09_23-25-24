@@ -1,7 +1,9 @@
+using System;
 using Animations;
 using Audio;
 using Boot;
 using Data;
+using Save;
 using SceneLoading;
 using UnityEngine;
 using VContainer;
@@ -20,6 +22,7 @@ namespace DI
             builder.Register<IAsyncSceneLoading, AsyncSceneLoading>(Lifetime.Singleton);
             builder.Register<IAnimation, AnimationManager>(Lifetime.Singleton);
             builder.Register<GameData>(Lifetime.Singleton);
+            builder.Register<SaveProgress>(Lifetime.Singleton);
             builder.RegisterInstance(loadingView);
             builder.RegisterInstance(audioManager);
         }

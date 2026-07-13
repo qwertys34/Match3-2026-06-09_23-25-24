@@ -17,7 +17,7 @@ namespace StateMachine.States
         private readonly InputReader _inputReader;
         private readonly IAnimation _animation;
         private AudioManager _audioManager;
-        
+
         public PlayerTurnState(IStateSwitcher stateSwitcher, IAnimation animation, Grid grid, AudioManager audioManager)
         {
             _stateSwitcher = stateSwitcher;
@@ -26,53 +26,126 @@ namespace StateMachine.States
             _audioManager = audioManager;
             _camera = Camera.main;
             _inputReader = new InputReader();
+            
+            // Подписываемся на события
             _inputReader.Click += OnTileClick;
+            _inputReader.Swipe += OnSwiped;
+            _inputReader.Press += OnPressed_AnimateTile;
+        }
+
+        private void OnPressed_AnimateTile(bool isPressed, Vector2 position)
+        {
+            var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(position));
+            if (isPressed)
+            {
+                _audioManager.PlayClick();
+                _animation.AnimateTile(_grid.GetValue(startGridPos.x, startGridPos.y), 1.2f);
+            }
+        }
+
+        private void OnSwiped(Vector2 startPos, Vector2 endPos) 
+        {
+            Debug.Log($"Обработка свайпа: {startPos} -> {endPos}");
+            
+            // Конвертируем экранные координаты в координаты сетки
+            var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(startPos));
+            var endGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(endPos));
+            
+            // Проверяем валидность позиций
+            if (!IsValidPosition(startGridPos) || !IsValidPosition(endGridPos))
+            {
+                Debug.Log("Свайп за пределами сетки");
+                return;
+            }
+            
+            // Проверяем, что это не пустая клетка
+            if (IsBlankPosition(startGridPos) || IsBlankPosition(endGridPos))
+            {
+                Debug.Log("Свайп по пустой клетке");
+                return;
+            }
+            
+            // Проверяем, что стартовая и конечная позиция — соседние тайлы
+            if (IsSwappable(startGridPos, endGridPos))
+            {
+                _audioManager.PlayClick();
+                _grid.SetCurrentPosition(startGridPos);
+                _grid.SetTargetPosition(endGridPos);
+                _stateSwitcher.SwitchState<SwapTilesState>();
+            }
+            else
+            {
+                Debug.Log("Свайп не между соседними тайлами");
+                _audioManager.PlayClick(); // Звук ошибки
+                DeselectTile();
+            }
         }
 
         private void OnTileClick()
         {
+            
             var clickPosition = _grid.WorldToGrid(
-                _camera.ScreenToWorldPoint(_inputReader.Position()));
+                _camera.ScreenToWorldPoint(_inputReader.GetPosition()));
 
             if (!IsValidPosition(clickPosition) || IsBlankPosition(clickPosition))
                 return;
+            
+            // Если ни одна клетка не выбрана
             if (_grid.CurrentPosition == _emptyPosition)
             {
                 _audioManager.PlayClick();
                 _grid.SetCurrentPosition(clickPosition);
-                _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1.2f);
+                Debug.Log($"Выбрана клетка: {clickPosition}");
             }
+            // Если кликнули по уже выбранной клетке — снимаем выделение
             else if (_grid.CurrentPosition == clickPosition)
             {
-                _audioManager.PlayClick(); // _audioManager.PlayDeselect();
+                _audioManager.PlayClick();
                 DeselectTile();
+                Debug.Log("Снято выделение");
             }
-            else if (_grid.CurrentPosition != clickPosition && IsSwappable(
-                         _grid.CurrentPosition, clickPosition))
+            // Если кликнули по другой клетке и она соседняя — меняем
+            else if (_grid.CurrentPosition != clickPosition && IsSwappable(_grid.CurrentPosition, clickPosition))
             {
+                _audioManager.PlayClick();
                 _grid.SetTargetPosition(clickPosition);
                 _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1f);
                 _stateSwitcher.SwitchState<SwapTilesState>();
+                Debug.Log($"Меняем {_grid.CurrentPosition} с {clickPosition}");
             }
-
+            else
+            {
+                // Кликнули по несоседней клетке — снимаем выделение
+                _audioManager.PlayClick();
+                DeselectTile();
+                Debug.Log("Клик по несоседней клетке — выделение снято");
+            }
         }
 
         public void Dispose()
         {
             _inputReader.Click -= OnTileClick;
+            _inputReader.Swipe -= OnSwiped;
+            _inputReader.Press -= OnPressed_AnimateTile;
+            _inputReader.Dispose();
         }
 
         public void Enter()
         {
             _inputReader.EnableInput(true);
             DeselectTile();
+            Debug.Log("PlayerTurnState Enter");
         }
 
         private void DeselectTile()
         {
-            _animation.AnimateTile(_grid.GetValue(_grid.CurrentPosition.x, _grid.CurrentPosition.y), 1f);
+            if (_grid.CurrentPosition != _emptyPosition)
+            {
+                _animation.AnimateTile(_grid.GetValue(_grid.CurrentPosition.x, _grid.CurrentPosition.y), 1f);
+            }
             _grid.SetCurrentPosition(_emptyPosition);
             _grid.SetTargetPosition(_emptyPosition);
+            Debug.Log("Тайл снят с выделения");
         }
 
         private bool IsSwappable(Vector2Int currentTilePos, Vector2Int targetTilePos) => 
@@ -84,11 +157,12 @@ namespace StateMachine.States
 
         private bool IsValidPosition(Vector2Int gridPos) => 
             gridPos.x >= 0 && gridPos.x < _grid.Width 
-            &&  gridPos.y >= 0 && gridPos.y < _grid.Height;
+            && gridPos.y >= 0 && gridPos.y < _grid.Height;
 
         public void Exit()
         {
             _inputReader.EnableInput(false);
+            Debug.Log("PlayerTurnState Exit");
         }
     }
 }

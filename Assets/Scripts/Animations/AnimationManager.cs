@@ -50,6 +50,7 @@ namespace Animations
 
         public void Dispose()
         {
+            _cts?.Cancel();
             _cts?.Dispose();
         }
 
