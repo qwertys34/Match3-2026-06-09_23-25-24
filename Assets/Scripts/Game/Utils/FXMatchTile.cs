@@ -17,13 +17,16 @@ namespace Game.Utils
         private void Awake()
         {
             _animation = new AnimationManager();
+            amountText.gameObject.SetActive(false);
         }
 
-        private void OnEnable()
+        private async void OnEnable()
         {
             StartCoroutine(HideTimer());
+            amountText.gameObject.SetActive(true);
             _animation.DoPunchAnimate(gameObject, new Vector3(1.1f, 1.2f, 1), 0.3f);
-            _animation.MoveObject(gameObject, transform.position + Vector3.up*0.3f, 0.5f, Ease.OutBack);
+            await _animation.MoveObject(gameObject, transform.position + Vector3.up*0.3f, 0.5f, Ease.OutBack);
+            amountText.gameObject.SetActive(false);
         }
 
         private IEnumerator HideTimer()

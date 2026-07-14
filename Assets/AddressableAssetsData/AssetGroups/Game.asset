@@ -55,11 +55,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4902495790e1e0a41a397e70c965f84e
-    m_Address: LightBgTileSpriteKingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 598faee821ea45442a1d25491112ad3f
     m_Address: Loose
     m_ReadOnly: 0
@@ -85,11 +80,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a0513218725d0ee41b1fe0cbc4925b6f
-    m_Address: DarkBgTileSpriteKingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d266e306f14de0f418bfbc2c78a870ae
     m_Address: FXPrefabKingdom
     m_ReadOnly: 0
@@ -112,6 +102,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f2bed7bf223fda64f9382fd4aa59cc41
     m_Address: Match
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcade85c5cb388b4a9899e10961d395c
+    m_Address: FXPrefabGem
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

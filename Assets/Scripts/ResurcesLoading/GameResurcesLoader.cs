@@ -79,8 +79,9 @@ namespace ResurcesLoading
                     DarkBgTileSpriteKingdom = await Loader<Sprite>("DarkBgTileSpriteKingdom");
                     LightBgTileSpriteKingdom = await Loader<Sprite>("LightBgTileSpriteKingdom");
                     break;
-                case LevelType.Candy:
-                    BgTileSpriteCandy = await Loader<Sprite>("BgTileSpriteCandy");
+                case LevelType.Gem:
+                case LevelType.Candy:    
+                    await Loader<Sprite>("BgTileSpriteCandy"); 
                     break;
             }
         }

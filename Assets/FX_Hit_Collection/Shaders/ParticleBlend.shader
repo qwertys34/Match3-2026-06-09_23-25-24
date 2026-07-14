@@ -64,5 +64,5 @@ Shader "Base/ParticleBlend" {
             ENDCG
         }
     }
-    CustomEditor "ShaderForgeMaterialInspector"
+    //CustomEditor "ShaderForgeMaterialInspector"
 }
