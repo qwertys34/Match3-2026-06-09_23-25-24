@@ -24,6 +24,6 @@ MonoBehaviour:
   - xPos: 7
     yPos: 7
   levelNumber: 4
-  levelType: 0
+  levelType: 2
   goalScore: 1500
   moves: 14

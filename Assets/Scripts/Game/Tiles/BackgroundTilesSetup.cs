@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Animations;
 using Cysharp.Threading.Tasks;
+using Levels;
 using ResurcesLoading;
 using UnityEngine;
 using VContainer;
@@ -55,10 +56,19 @@ namespace Game.Tiles
             var backgroundTile = _objectResolver.Instantiate(_gameResurcesLoader.BackgroundTilePrefab,
                 new Vector3(x, y, 0.1f), Quaternion.identity, parent);
 
-            if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0)
-                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.LitghBgTileSprite;
-            else 
-                backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.DarkBgTileSprite;
+            var levelType = _gameResurcesLoader.gameData.CurrentLevel.LevelType;
+            switch (levelType)
+            {
+                case LevelType.Kingdom:
+                    if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0)
+                        backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.LightBgTileSpriteKingdom;
+                    else 
+                        backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.DarkBgTileSpriteKingdom;
+                    break;
+                case LevelType.Candy:
+                    backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.BgTileSpriteCandy;
+                    break;
+            }
             return backgroundTile;
         }
     }

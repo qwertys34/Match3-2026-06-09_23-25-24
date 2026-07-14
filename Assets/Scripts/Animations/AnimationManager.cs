@@ -47,6 +47,11 @@ namespace Animations
         {
              tile.transform.DOLocalMove(position, 0.2f).SetEase(ease);
         }
+        
+        public void MoveObject(GameObject go, Vector3 position, float duration, Ease ease)
+        {
+            go.transform.DOLocalMove(position, duration).SetEase(ease);
+        }
 
         public void Dispose()
         {

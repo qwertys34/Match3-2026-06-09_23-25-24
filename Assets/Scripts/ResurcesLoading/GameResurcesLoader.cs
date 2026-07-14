@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Data;
 using Game.Tiles;
+using Levels;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -16,15 +17,19 @@ namespace ResurcesLoading
         public TileConfig BlankConfig { get; private set; }
         public GameObject BackgroundTilePrefab { get; private set; }
         public GameObject FXRemoveTilePrefab { get; private set; }
-        public Sprite LitghBgTileSprite { get; private set; }
-        public Sprite DarkBgTileSprite { get; private set; }
+        
+        // Kingdom
+        public Sprite LightBgTileSpriteKingdom { get; private set; }
+        public Sprite DarkBgTileSpriteKingdom { get; private set; }
+        // Candy
+        public Sprite BgTileSpriteCandy { get; private set; }
         
         public List<TileConfig> CurrentTileSet { get; private set; }
         
-        private readonly GameData _gameData;
+        public readonly GameData gameData;
         private CancellationTokenSource _cts;
 
-        public GameResurcesLoader(GameData gameData) => _gameData = gameData;
+        public GameResurcesLoader(GameData gameData) => this.gameData = gameData;
 
         public void Dispose() => _cts?.Dispose();
         
@@ -39,7 +44,7 @@ namespace ResurcesLoading
         {
             CurrentTileSet = new List<TileConfig>();
             
-            var key = _gameData.CurrentLevel.LevelType;
+            var key = gameData.CurrentLevel.LevelType;
             CurrentTileSet = (await Loader<TileSetConfig>(key.ToString())).Set;
             
             BlankConfig = await Loader<TileConfig>("BlankTile");
@@ -60,15 +65,24 @@ namespace ResurcesLoading
 
         private async UniTask LoadTilesPrefab()
         {
+            var key = gameData.CurrentLevel.LevelType;
             BackgroundTilePrefab = await Loader<GameObject>("BackgroundTilePrefab");
             TilePrefab = await Loader<GameObject>("TilePrefab");
-            FXRemoveTilePrefab = await Loader<GameObject>("FXPrefab");
+            FXRemoveTilePrefab = await Loader<GameObject>("FXPrefab"+key);//
         }
         
         private async UniTask LoadBackgroundSprits()
         {
-            DarkBgTileSprite = await Loader<Sprite>("Dark");
-            LitghBgTileSprite = await Loader<Sprite>("Light");
+            switch(gameData.CurrentLevel.LevelType)
+            {
+                case LevelType.Kingdom:
+                    DarkBgTileSpriteKingdom = await Loader<Sprite>("DarkBgTileSpriteKingdom");
+                    LightBgTileSpriteKingdom = await Loader<Sprite>("LightBgTileSpriteKingdom");
+                    break;
+                case LevelType.Candy:
+                    BgTileSpriteCandy = await Loader<Sprite>("BgTileSpriteCandy");
+                    break;
+            }
         }
 
     }

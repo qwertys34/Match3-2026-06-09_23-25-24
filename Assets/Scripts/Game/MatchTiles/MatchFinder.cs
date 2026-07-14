@@ -32,7 +32,7 @@ namespace Game.MatchTiles
                 {
                     var tile =  grid.GetValue(x, y);
                     if (tile == null) continue;
-                    if (tile.IsMatched || tile.IsInteractable == false) continue; // || or &&
+                    if (tile.IsMatched || tile.IsInteractable == false) continue; 
                     MatchResult matchTiles = FindConnectedTiles(tile, grid);
                     if (matchTiles.ConectedTiles.Count < 3) continue;
                     
@@ -67,10 +67,10 @@ namespace Game.MatchTiles
             CheckDirection(tileGridPos, Vector2Int.left, grid, tile,  connectedTiles);
             if (connectedTiles.Count == 3)
                 return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
-                    MatchDirection.Horizontal); // у него почему-то Vector2Int.right
+                    MatchDirection.Horizontal); 
             if (connectedTiles.Count > 3)
                 return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
-                    MatchDirection.LongHorizontal); // у него почему-то Vector2Int.right
+                    MatchDirection.LongHorizontal); 
             
             connectedTiles.Clear();
             connectedTiles.Add(tile);
@@ -78,10 +78,10 @@ namespace Game.MatchTiles
             CheckDirection(tileGridPos, Vector2Int.down, grid, tile,  connectedTiles);
             if (connectedTiles.Count == 3)
                 return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
-                    MatchDirection.Vertical); // а тут у него Vector2Int.up
+                    MatchDirection.Vertical);
             if (connectedTiles.Count > 3)
                 return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
-                    MatchDirection.LongVertical); // а тут у него Vector2Int.up
+                    MatchDirection.LongVertical);
             
             connectedTiles.Clear();
             return new MatchResult(connectedTiles, MatchDirection.None);
@@ -116,11 +116,12 @@ namespace Game.MatchTiles
             {
                 var tilePos =  grid.WorldToGrid(tile.transform.position);
                 var multiConnectedTiles = new List<Tile>();
+                multiConnectedTiles.Add(tile); 
                 CheckDirection(tilePos, direction, grid, tile, multiConnectedTiles);
                 CheckDirection(tilePos, direction * -1, grid, tile, multiConnectedTiles);
                 if (multiConnectedTiles.Count <= 2) continue;
                 multiConnectedTiles.AddRange(connectedTiles);
-                return new MatchResult(multiConnectedTiles, MatchDirection.Multiply); //connectedTiles почему не multiConnectedTiles?
+                return new MatchResult(multiConnectedTiles, MatchDirection.Multiply); 
             }
             
             return new MatchResult(connectedTiles, matchDirection);

@@ -21,7 +21,7 @@ namespace Data
             _asyncSceneLoading = asyncSceneLoading;
         }
 
-        public async UniTask Start(LevelConfig level)
+        public async UniTask Start(LevelConfig level) //
         {
             _cts = new CancellationTokenSource();
             _gameData.SetCurrentLevel(level);

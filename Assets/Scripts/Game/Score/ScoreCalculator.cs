@@ -1,3 +1,4 @@
+using System;
 using Game.MatchTiles;
 using UnityEngine;
 
@@ -15,26 +16,32 @@ namespace Game.Score
             switch (matchDirection)
             {
                 case MatchDirection.Horizontal:
-                    _gameProgress.AddScore(50);
-                    Debug.Log("+50");
-                    break;
                 case MatchDirection.Vertical:
                     _gameProgress.AddScore(50);
-                    Debug.Log("+50");
                     break;
                 case MatchDirection.LongHorizontal:
-                    _gameProgress.AddScore(100);
-                    Debug.Log("+100");
-                    break;
                 case MatchDirection.LongVertical:
                     _gameProgress.AddScore(100);
-                    Debug.Log("+100");
                     break;
                 case MatchDirection.Multiply:
                     _gameProgress.AddScore(200);
-                    Debug.Log("+200");
                     break;
+                case MatchDirection.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(matchDirection), matchDirection, null);
             }
+        }
+
+        public int CalculateScore(MatchDirection matchDirection)
+        {
+            return matchDirection switch
+            {
+                MatchDirection.Horizontal or MatchDirection.Vertical => 50,
+                MatchDirection.LongHorizontal or MatchDirection.LongVertical => 100,
+                MatchDirection.Multiply => 200,
+                _ => 0
+            };
         }
     }
 }

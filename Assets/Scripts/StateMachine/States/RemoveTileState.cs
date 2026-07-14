@@ -53,7 +53,9 @@ namespace StateMachine.States
                 _audioManager.PlayRemove();
                 _grid.SetValue(tile.transform.position, null);
                 await _animation.HideTile(tile.gameObject);
-                _fxPool.GetFX(tile.transform.position, _gameBoard.transform);
+                var amountScore = _scoreCalculator.CalculateScore(_matchFinder.CurrentMatchResult.MatchDirection);
+                _fxPool.GetFX(tile.transform.position, _gameBoard.transform, amountScore);
+                // fadsfl;ds
             }
             _cts.Cancel();
         }

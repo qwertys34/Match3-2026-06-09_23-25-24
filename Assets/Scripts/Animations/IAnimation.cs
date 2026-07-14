@@ -18,5 +18,8 @@ namespace Animations
         void AnimateTile(Tile tile, float value);
         
         void MoveTile(Tile tile, Vector3 position, Ease ease);
+        
+        void MoveObject(GameObject go, Vector3 position, float duration, Ease ease);
+        
     }
 }

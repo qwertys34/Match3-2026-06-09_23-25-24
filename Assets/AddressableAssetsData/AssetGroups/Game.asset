@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Game
   m_GUID: 4972ebf088ea89942b130ae7999f04ec
   m_SerializeEntries:
+  - m_GUID: 0ed313967f6966d439c3559b8d9c63d3
+    m_Address: FXPrefabCandy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0ee400eee036a0b43a00983b9e1f1388
     m_Address: Win
     m_ReadOnly: 0
@@ -51,7 +56,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4902495790e1e0a41a397e70c965f84e
-    m_Address: Light
+    m_Address: LightBgTileSpriteKingdom
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -62,6 +67,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6abbf657acb522041a2c259872ffc4c9
     m_Address: Kingdom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ef8855d6478acf439ed3b59cf9a4bcd
+    m_Address: Candy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -76,17 +86,22 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0513218725d0ee41b1fe0cbc4925b6f
-    m_Address: Dark
+    m_Address: DarkBgTileSpriteKingdom
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d266e306f14de0f418bfbc2c78a870ae
-    m_Address: FXPrefab
+    m_Address: FXPrefabKingdom
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dbf8d68417f3ce5469a98062e96bc162
     m_Address: BlankTile
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deaddf35a5c356945bd9a77dbf91a456
+    m_Address: BgTileSpriteCandy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
