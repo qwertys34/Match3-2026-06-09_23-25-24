@@ -9,6 +9,7 @@ using Game.Score;
 using Game.Tiles;
 using Game.UI;
 using Game.Utils;
+using ResurcesLoading;
 using StateMachine.States;
 
 namespace StateMachine
@@ -28,11 +29,12 @@ namespace StateMachine
         private EndGamePanelView _endGamePanelView;
         private BackgroundTilesSetup _backgroundTilesSetup;
         private FXPool _fxPool;
+        private GameResurcesLoader _gameResurcesLoader;
         
         public StateMachine(GameBoard gameBoard,  Grid grid,  IAnimation animation, MatchFinder matchFinder,
             TilePool tilePool,  GameProgress gameProgress,  ScoreCalculator scoreCalculator,
-            AudioManager audioManager, EndGamePanelView endGamePanelView, 
-            BackgroundTilesSetup backgroundTilesSetup, FXPool fxPool)
+            AudioManager audioManager, EndGamePanelView endGamePanelView, BackgroundTilesSetup
+                backgroundTilesSetup, FXPool fxPool,  GameResurcesLoader gameResurcesLoader)
         {
             _gameBoard = gameBoard;
             _grid = grid;
@@ -45,11 +47,13 @@ namespace StateMachine
             _endGamePanelView = endGamePanelView;
             _backgroundTilesSetup = backgroundTilesSetup;
             _fxPool = fxPool;
+            _gameResurcesLoader = gameResurcesLoader;
             _states = new List<IState>() {
                 new PrepareState(this, _gameBoard, _backgroundTilesSetup, _grid),
                 new PlayerTurnState(this, _animation, _grid, _audioManager), 
                 new SwapTilesState(this, _grid, _animation, _matchFinder, _gameProgress, _audioManager),
-                new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager, _fxPool, _gameBoard),
+                new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager,
+                    _fxPool, _gameBoard, _gameResurcesLoader),
                 new RefillGridState(this, _grid, _animation, _matchFinder, _tilePool,
                     gameBoard.transform, _gameProgress, _audioManager),
                 new WinState(_endGamePanelView),

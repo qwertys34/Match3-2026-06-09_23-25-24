@@ -49,10 +49,13 @@ namespace StateMachine.States
                 }
                 else
                 {
+                    _matchFinder.CheckToBlankTiles(_grid); // ***
+                    //await AnimateBlankTile();//111
                     _audioManager.PlayMatch();
                     _gameProgress.SpendMoves();
                     _switcher.SwitchState<RemoveTileState>();
                 }
+                _cts.Cancel();
             }
             catch (Exception e)
             {
@@ -76,7 +79,7 @@ namespace StateMachine.States
             
             await UniTask.WaitForSeconds(0.2f, _cts.IsCancellationRequested);
         }
-
+        
         private void AnimateTile(Tile tile, Vector2Int position)
         {
             _animation.MoveTile(tile, _grid.GridToWorld(position.x, position.y), Ease.OutCubic);

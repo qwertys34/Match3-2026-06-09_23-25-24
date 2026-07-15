@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Tiles;
+using ResurcesLoading;
 using UnityEngine;
 using Grid = Game.GridSystem.Grid;
 
@@ -18,21 +19,29 @@ namespace Game.MatchTiles
     public class MatchFinder
     {
         public List<Tile> TilesToRemove { get; }
+        public List<BlankTile> BlankTilesToRemove { get; }
         public MatchResult CurrentMatchResult { get; private set; }
-
-        public MatchFinder() => TilesToRemove = new List<Tile>();
-
+        
+        private GameResurcesLoader _resurcesLoader;
+        public MatchFinder(GameResurcesLoader resurcesLoader)
+        {
+            TilesToRemove = new List<Tile>();
+            BlankTilesToRemove =  new List<BlankTile>();
+            _resurcesLoader = resurcesLoader;
+        }
+        
         public bool CheckBoardForMatches(Grid grid)
         {
             var hasMatched = false;
-            ClearTilesToRemove();
+            ClearAnyTilesToRemove();
             for (int x = 0; x < grid.Width; x++)
             {
                 for (int y = 0; y < grid.Height; y++)
                 {
                     var tile =  grid.GetValue(x, y);
                     if (tile == null) continue;
-                    if (tile.IsMatched || tile.IsInteractable == false) continue; 
+                    if (tile.IsMatched || tile.IsInteractable == false) continue;
+                    
                     MatchResult matchTiles = FindConnectedTiles(tile, grid);
                     if (matchTiles.ConectedTiles.Count < 3) continue;
                     
@@ -46,12 +55,22 @@ namespace Game.MatchTiles
             return hasMatched;
         }
         
-        public void ClearTilesToRemove()
+        public void ClearAnyTilesToRemove()
         {
             foreach (var tile in TilesToRemove) 
                 tile.SetMatch(false);
+            //var counter = -1; не нужно
+            /*foreach (var blankTile in BlankTilesToRemove)
+            {
+                if (blankTile.CanAlive()) continue;
+                blankTile.ChangeState(_resurcesLoader, 1);
+                //counter++; не нужно
+            }*/
             
             TilesToRemove.Clear();
+            //if (counter == BlankTilesToRemove.Count) не нужно 
+                BlankTilesToRemove.Clear();
+            
         }
         
         public void ClearCurrentMatchResult() => 
@@ -85,6 +104,35 @@ namespace Game.MatchTiles
             
             connectedTiles.Clear();
             return new MatchResult(connectedTiles, MatchDirection.None);
+        }
+
+        public void CheckToBlankTiles(Grid grid)
+        {
+            
+            foreach (var tile in TilesToRemove)
+            {
+                var tileGridPos = grid.WorldToGrid(tile.transform.position);
+                CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.left);
+                CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.right);
+                CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.up);
+                CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.down);
+                
+            }
+        }
+
+        private void CheckDirectionOnBlankTiles(Grid grid,Vector2Int position, Vector2Int direction)
+        {
+            var checkedPos = position + direction;
+            if (!grid.IsValidPosition(checkedPos.x, checkedPos.y)) return;
+                
+            var tile = grid.GetValue(checkedPos.x,checkedPos.y);
+            if (tile.tileKind == TileKind.Blank)
+            {
+                BlankTile blankTile = (BlankTile)tile;
+                //blankTile.ChangeState(_resurcesLoader);
+                if (!BlankTilesToRemove.Contains(blankTile))
+                    BlankTilesToRemove.Add(blankTile);
+            }
         }
         
         private void CheckDirection(Vector2Int position, Vector2Int direction,
@@ -126,5 +174,6 @@ namespace Game.MatchTiles
             
             return new MatchResult(connectedTiles, matchDirection);
         }
+        
     }
 }

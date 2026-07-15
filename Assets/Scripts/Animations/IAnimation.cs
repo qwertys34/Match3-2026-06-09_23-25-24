@@ -19,6 +19,8 @@ namespace Animations
         
         void MoveTile(Tile tile, Vector3 position, Ease ease);
         
+        UniTask ShakeAnimate(Transform target, float duration, Ease ease);
+        
         UniTask MoveObject(GameObject go, Vector3 position, float duration, Ease ease);
         
     }

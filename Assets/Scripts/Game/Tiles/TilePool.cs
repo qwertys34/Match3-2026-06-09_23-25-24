@@ -38,16 +38,26 @@ namespace Game.Tiles
         {
             var blankPrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
                 position, Quaternion.identity, parent);
-            var blankTile = blankPrefab.GetComponent<Tile>();
+            var blankTile = blankPrefab.AddComponent<BlankTile>();
+            blankTile.SetTileKind(TileKind.Blank);
             blankTile.SetTileConfig(_gameResurcesLoader.BlankConfig);
             return blankTile;
         }
+        
+        //CreateBombTile()
+        //Create....
+        //Create....
+        
+        //Create....
+        
+        //Create....
         
         private Tile CreateTile(Vector3 position, Transform parent)
         {
             var tilePrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
                 position, Quaternion.identity, parent);
             var tile = tilePrefab.GetComponent<Tile>();
+            tile.SetTileKind(TileKind.Normal);
             tile.SetTileConfig(GetRandomTileConfig());
             _tilePool.Add(tile);
             return tile;

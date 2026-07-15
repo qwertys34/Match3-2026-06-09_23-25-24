@@ -15,17 +15,17 @@ namespace Game.Board
         
         private Grid _grid;
         private TilePool _tilePool;
-        private BlankTilesSetup _blankTilesSetup;
+        private InteractablesTilesSetup interactablesTilesSetup;
         private IAnimation _animation;
         private MatchFinder _matchFinder;
         
         [Inject] public void Construct(Grid grid, TilePool tilePool,
-            BlankTilesSetup blankTilesSetup, IAnimation animation, MatchFinder matchFinder)
+            InteractablesTilesSetup interactablesTilesSetup, IAnimation animation, MatchFinder matchFinder)
         {
             _grid = grid;
             _tilePool = tilePool;
             _animation = animation;
-            _blankTilesSetup = blankTilesSetup;
+            this.interactablesTilesSetup = interactablesTilesSetup;
             _matchFinder = matchFinder;
         }
         
@@ -48,7 +48,7 @@ namespace Game.Board
                 FillBoard();
                 Debug.Log("Created board");
             }
-            _matchFinder.ClearTilesToRemove();
+            _matchFinder.ClearAnyTilesToRemove();
             RevealTiles();
         }
 
@@ -57,7 +57,7 @@ namespace Game.Board
             if (_tilesToRefill == null) return;
             foreach (var tile in _tilesToRefill)
             {
-                _grid.SetValue(tile.transform.position, null);
+                _grid.SetValue(tile.transform.position, null); // уничтожаю тайлы 
                 tile.gameObject.SetActive(false);
             }
             _tilesToRefill.Clear();
@@ -69,22 +69,26 @@ namespace Game.Board
             {
                 for (int y = 0; y < _grid.Height; y++)
                 {
-                    if (_blankTilesSetup.Blanks[x, y])
+                    var tileKind = interactablesTilesSetup.tileKind[x, y];
+                    switch (tileKind)
                     {
-                        if (_grid.GetValue(x, y)) continue;
-                        
-                        var blankTile = _tilePool.CreateBlankTile(_grid.GridToWorld(x, y), transform);
-                        _grid.SetValue(x, y, blankTile);
-                        _animation.Reveal(blankTile.gameObject, 1f);
+                        case TileKind.Blank:
+                            if (_grid.GetValue(x, y)) continue; 
+                            var blankTile = _tilePool.CreateBlankTile(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, blankTile);
+                            _animation.Reveal(blankTile.gameObject, 1f);
+                            break;
+                        case TileKind.Jelly:
+                            break;
+                        case TileKind.Bomb:
+                            break;
+                        case TileKind.Normal:
+                            var tile = _tilePool.GetTile(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, tile);
+                            tile.gameObject.SetActive(true);
+                            _tilesToRefill.Add(tile);
+                            break;
                     }
-                    else
-                    {
-                        var tile = _tilePool.GetTile(_grid.GridToWorld(x, y), transform);
-                        _grid.SetValue(x, y, tile);
-                        tile.gameObject.SetActive(true);
-                        _tilesToRefill.Add(tile);   
-                    }
-                    
                 }
             }   
         }

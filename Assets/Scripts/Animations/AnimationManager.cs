@@ -54,6 +54,13 @@ namespace Animations
             await tween;
         }
 
+        public async UniTask ShakeAnimate(Transform target, float duration, Ease ease)
+        {
+            var tween = target.DOShakePosition(duration, 0.3f).SetEase(ease);
+            _activeTweens.Add(tween);
+            await tween;
+        }
+
         public void MoveTile(Tile tile, Vector3 position, Ease ease)
         {
              var tween = tile.transform.DOLocalMove(position, 0.2f).SetEase(ease);

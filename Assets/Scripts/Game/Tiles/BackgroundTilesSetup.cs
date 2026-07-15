@@ -52,21 +52,7 @@ namespace Game.Tiles
         {
             var backgroundTile = _objectResolver.Instantiate(_gameResurcesLoader.BackgroundTilePrefab,
                 new Vector3(x, y, 0.1f), Quaternion.identity, parent);
-
-            var levelType = _gameResurcesLoader.gameData.CurrentLevel.LevelType;
-            switch (levelType)
-            {
-                case LevelType.Kingdom:
-                    if (x % 2 == 0 && y % 2 == 0 || x % 2 != 0 && y % 2 != 0)
-                        backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.LightBgTileSpriteKingdom;
-                    else 
-                        backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.DarkBgTileSpriteKingdom;
-                    break;
-                case LevelType.Candy:
-                case LevelType.Gem:    
-                    backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.BgTileSpriteCandy;
-                    break;
-            }
+            backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.BgTileSpriteCandy;
             return backgroundTile;
         }
     }

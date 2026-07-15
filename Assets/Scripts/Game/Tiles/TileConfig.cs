@@ -7,7 +7,12 @@ namespace Game.Tiles
     {
         Normal, 
         Blank,
-        Jelly
+        Jelly,
+        Rocket,
+        Bomb,
+        SupperCandy,
+        Bow,
+        Boomerang
     }
 }
 

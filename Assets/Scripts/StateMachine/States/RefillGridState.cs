@@ -48,6 +48,7 @@ namespace StateMachine.States
             await RefillTiles();
             if (_matchFinder.CheckBoardForMatches(_grid))
             {
+                _matchFinder.CheckToBlankTiles(_grid);
                 _stateSwitcher.SwitchState<RemoveTileState>();
                 _audioManager.PlayMatch();
             }

@@ -4,12 +4,14 @@ using System.Threading;
 using Animations;
 using Audio;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Game.Board;
 using Game.GridSystem;
 using Game.MatchTiles;
 using Game.Score;
 using Game.Tiles;
 using Game.Utils;
+using ResurcesLoading;
 
 namespace StateMachine.States
 {
@@ -24,9 +26,11 @@ namespace StateMachine.States
         private AudioManager _audioManager;
         private FXPool _fxPool;
         private GameBoard _gameBoard;
+        private GameResurcesLoader  _gameResurcesLoader;
         
         public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation,  MatchFinder matchFinder,
-            ScoreCalculator scoreCalculator,  AudioManager audioManager, FXPool fxPool, GameBoard gameBoard)
+            ScoreCalculator scoreCalculator,  AudioManager audioManager, FXPool fxPool, GameBoard gameBoard,
+            GameResurcesLoader gameResurcesLoader)
         {
             _switcher = switcher;
             _grid = grid;
@@ -36,17 +40,18 @@ namespace StateMachine.States
             _audioManager = audioManager;
             _fxPool = fxPool;
             _gameBoard = gameBoard;
+            _gameResurcesLoader = gameResurcesLoader;
         }
         
         public async void Enter()
         {
             _cts = new CancellationTokenSource();
             _scoreCalculator.CalculateScoreToAdd(_matchFinder.CurrentMatchResult.MatchDirection);
-            await RemoveTiles(_matchFinder.TilesToRemove);
+            await RemoveAnyTiles(_matchFinder.TilesToRemove, _matchFinder.BlankTilesToRemove);
             _switcher.SwitchState<RefillGridState>();
         }
 
-        private async UniTask RemoveTiles(List<Tile> tilesToRemove)
+        private async UniTask RemoveAnyTiles(List<Tile> tilesToRemove, List<BlankTile> blankTilesToRemove)
         {
             foreach (var tile in tilesToRemove)
             {
@@ -57,12 +62,23 @@ namespace StateMachine.States
                 _fxPool.GetFX(tile.transform.position, _gameBoard.transform, amountScore);
                 // fadsfl;ds
             }
+            foreach (var blankTile in blankTilesToRemove)
+            {
+                await _animation.ShakeAnimate(blankTile.transform, 0.1f, Ease.InQuint);//111
+                blankTile.ChangeState(_gameResurcesLoader);
+                if (blankTile.CanAlive()) continue;
+                
+                _audioManager.PlayRemove();
+                _grid.SetValue(blankTile.transform.position, null);
+                await _animation.HideTile(blankTile.gameObject);
+                // fadsfl;ds
+            }
             _cts.Cancel();
         }
         
         public void Exit()
         {
-            _matchFinder.ClearTilesToRemove();
+            _matchFinder.ClearAnyTilesToRemove(); 
             _cts?.Cancel();
         }
 

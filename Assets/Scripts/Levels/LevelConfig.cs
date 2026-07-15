@@ -10,7 +10,7 @@ namespace Levels
         [Header("Grid")]
         [SerializeField] private int width;
         [SerializeField] private int height;
-        [SerializeField] private List<BlankTile> blankTilesLayout;
+        [SerializeField] private List<InteractableTile> interactableTilesLayout;
         
         [Header("Level")]
         [SerializeField] private int levelNumber;
@@ -20,7 +20,7 @@ namespace Levels
 
         public int Width => width;
         public int Height => height;
-        public List<BlankTile> BlankTilesLayout => blankTilesLayout;
+        public List<InteractableTile> InteractableTilesLayout => interactableTilesLayout;
 
         public int LevelNumber => levelNumber;
         public LevelType LevelType => levelType;

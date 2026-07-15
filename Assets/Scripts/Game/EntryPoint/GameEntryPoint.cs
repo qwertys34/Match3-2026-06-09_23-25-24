@@ -10,7 +10,6 @@ using Game.UI;
 using Game.Utils;
 using Levels;
 using ResurcesLoading;
-using UnityEngine;
 using Grid = Game.GridSystem.Grid;
 using IInitializable = VContainer.Unity.IInitializable;
 
@@ -21,7 +20,7 @@ namespace Game.EntryPoint
         private BackgroundTilesSetup _backgroundTilesSetup;
         private LevelConfig _levelConfig;
         private ScoreCalculator _scoreCalculator;
-        private BlankTilesSetup _blankTilesSetup;
+        private InteractablesTilesSetup interactablesTilesSetup;
         private GameProgress _gameProgress;
         private MatchFinder _matchFinder;
         private Grid _grid;
@@ -49,20 +48,21 @@ namespace Game.EntryPoint
             _gameProgress.LoadLevelConfig(_levelConfig.GoalScore, _levelConfig.Moves);
             await _resurcesLoader.Load();
             _setupCamera.SetCamera(_grid.Width, _grid.Height, false);
-            _blankTilesSetup.SetupBlanks(_levelConfig);
+            interactablesTilesSetup.SetupBlanks(_levelConfig);
             _stateMachine = new StateMachine.StateMachine(_gameBoard, _grid, _animation, _matchFinder, _tilePool,
-                _gameProgress, _scoreCalculator, _audioManager, _endGamePanelView, _backgroundTilesSetup, _fxPool);
+                _gameProgress, _scoreCalculator, _audioManager, _endGamePanelView, _backgroundTilesSetup, _fxPool,
+                _resurcesLoader);
             _sceneLoading.LoadingIsDone(true);
         }
 
-        public GameEntryPoint(ScoreCalculator scoreCalculator, BlankTilesSetup blankTilesSetup,
+        public GameEntryPoint(ScoreCalculator scoreCalculator, InteractablesTilesSetup interactablesTilesSetup,
             GameProgress gameProgress, MatchFinder matchFinder, Grid grid, GameBoard gameBoard, GameDebug gameDebug,
             TilePool tilePool, GameData gameData, AudioManager audioManager, IAnimation animation,
             GameResurcesLoader resurcesLoader, SetupCamera setupCamera, IAsyncSceneLoading sceneLoading,
             EndGamePanelView endGamePanelView, BackgroundTilesSetup backgroundTilesSetup, FXPool fxPool)
         {
             _scoreCalculator = scoreCalculator;
-            _blankTilesSetup = blankTilesSetup;
+            this.interactablesTilesSetup = interactablesTilesSetup;
             _gameProgress = gameProgress;
             _matchFinder = matchFinder;
             _grid = grid;

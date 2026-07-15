@@ -16,7 +16,7 @@ MonoBehaviour:
   m_GUID: 4972ebf088ea89942b130ae7999f04ec
   m_SerializeEntries:
   - m_GUID: 0ed313967f6966d439c3559b8d9c63d3
-    m_Address: FXPrefabCandy
+    m_Address: FXPrefab2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -27,11 +27,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1461240925963d949a2314065f7dffc6
     m_Address: Remove
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 14fe82cb06fd91f4696d62f7c3ff58e6
-    m_Address: Gem
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -60,23 +55,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6abbf657acb522041a2c259872ffc4c9
-    m_Address: Kingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ef8855d6478acf439ed3b59cf9a4bcd
     m_Address: Candy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7964637459338c14d82cbef49a03a462
-    m_Address: BlankTileToCandy
+    m_Address: BlankTile
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 933e1fe95aa0f5d45b6240dcfefddfcb
-    m_Address: FXPrefabGem
+    m_Address: FXPrefab1
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -85,28 +75,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 97ae00856bc66ae4fbaa05111d0a74ab
-    m_Address: DarkBgTileSpriteKingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 99c9720ab356a0642a771bea13969a05
     m_Address: Game
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c0624337dbb835d499e47760d626f6c4
-    m_Address: LightBgTileSpriteKingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d266e306f14de0f418bfbc2c78a870ae
-    m_Address: FXPrefabKingdom
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dbf8d68417f3ce5469a98062e96bc162
-    m_Address: BlankTileToKingdom
+    m_Address: FXPrefab3
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

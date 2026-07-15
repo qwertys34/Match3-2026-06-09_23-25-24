@@ -8,17 +8,19 @@ namespace Game.Tiles
         public TileConfig TileConfig { get; private set; }
         public bool IsInteractable { get; private set; }
         public bool IsMatched { get; private set; }
+        public TileKind tileKind { get; private set; }
 
         public void SetTileConfig(TileConfig tileConfig)
         {
             TileConfig = tileConfig;
             IsInteractable = tileConfig.IsInteractable;
             IsMatched = false;
-            GetComponent<SpriteRenderer>().sprite = tileConfig.Sprite;
+            GetComponent<SpriteRenderer>().sprite = tileConfig.Sprite;//
         }
         
         public void SetIsInteractable(bool value) => IsInteractable = value;
         
         public void SetMatch(bool value) => IsMatched = value;
+        public void SetTileKind(TileKind value) => tileKind = value;
     }
 }

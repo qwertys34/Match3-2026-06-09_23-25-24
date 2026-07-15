@@ -29,7 +29,7 @@ namespace DI
             builder.RegisterInstance(gameProgressView);  
             
             builder.Register<Grid>(Lifetime.Singleton);
-            builder.Register<BlankTilesSetup>(Lifetime.Singleton);
+            builder.Register<InteractablesTilesSetup>(Lifetime.Singleton);
             builder.Register<SetupCamera>(Lifetime.Singleton);
             builder.Register<TilePool>(Lifetime.Singleton);
             builder.Register<GameDebug>(Lifetime.Singleton);
