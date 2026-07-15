@@ -11,11 +11,11 @@ namespace Animations
         
         UniTask HideTile(GameObject target);
         
-        void DoPunchAnimate(GameObject target, Vector3 scale, float duretion);
+        UniTask DoPunchAnimate(GameObject target, Vector3 scale, float duretion);
         
         void MoveUI(RectTransform target, Vector3 position, float duration, Ease ease);
 
-        void AnimateTile(Tile tile, float value);
+        UniTask AnimateTile(Tile tile, float value);
         
         void MoveTile(Tile tile, Vector3 position, Ease ease);
         

@@ -27,27 +27,13 @@ namespace StateMachine.States
             _camera = Camera.main;
             _inputReader = new InputReader();
             
-            // Подписываемся на события
-            _inputReader.Click += OnTileClick;
+            _inputReader.Click += OnTileClick; 
             _inputReader.Swipe += OnSwiped;
-            _inputReader.Press += OnPressed_AnimateTile;
-        }
-
-        private void OnPressed_AnimateTile(bool isPressed, Vector2 position)
-        {
-            var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(position));
-            if (isPressed)
-            {
-                _audioManager.PlayClick();
-                _animation.AnimateTile(_grid.GetValue(startGridPos.x, startGridPos.y), 1.2f);
-            }
         }
 
         private void OnSwiped(Vector2 startPos, Vector2 endPos) 
         {
-            Debug.Log($"Обработка свайпа: {startPos} -> {endPos}");
             
-            // Конвертируем экранные координаты в координаты сетки
             var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(startPos));
             var endGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(endPos));
             
@@ -71,6 +57,7 @@ namespace StateMachine.States
                 _audioManager.PlayClick();
                 _grid.SetCurrentPosition(startGridPos);
                 _grid.SetTargetPosition(endGridPos);
+                _animation.DoPunchAnimate(_grid.GetValue(startGridPos.x, startGridPos.y).gameObject,Vector3.one* 1.2f,0.2f);
                 _stateSwitcher.SwitchState<SwapTilesState>();
             }
             else
@@ -88,13 +75,18 @@ namespace StateMachine.States
                 _camera.ScreenToWorldPoint(_inputReader.GetPosition()));
 
             if (!IsValidPosition(clickPosition) || IsBlankPosition(clickPosition))
+            {
+                DeselectTile();
                 return;
+            }
             
             // Если ни одна клетка не выбрана
             if (_grid.CurrentPosition == _emptyPosition)
             {
                 _audioManager.PlayClick();
                 _grid.SetCurrentPosition(clickPosition);
+                var tile = _grid.GetValue(clickPosition.x, clickPosition.y);
+                _animation.AnimateTile(tile, 1.2f);
                 Debug.Log($"Выбрана клетка: {clickPosition}");
             }
             // Если кликнули по уже выбранной клетке — снимаем выделение
@@ -126,7 +118,6 @@ namespace StateMachine.States
         {
             _inputReader.Click -= OnTileClick;
             _inputReader.Swipe -= OnSwiped;
-            _inputReader.Press -= OnPressed_AnimateTile;
             _inputReader.Dispose();
         }
 

@@ -24,7 +24,7 @@ namespace Game.Utils
         {
             StartCoroutine(HideTimer());
             amountText.gameObject.SetActive(true);
-            _animation.DoPunchAnimate(gameObject, new Vector3(1.1f, 1.2f, 1), 0.3f);
+            _ = _animation.DoPunchAnimate(gameObject, new Vector3(1.1f, 1.2f, 1), 0.3f);
             await _animation.MoveObject(gameObject, transform.position + Vector3.up*0.3f, 0.5f, Ease.OutBack);
             amountText.gameObject.SetActive(false);
         }

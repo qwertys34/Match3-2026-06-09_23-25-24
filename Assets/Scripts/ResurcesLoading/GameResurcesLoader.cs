@@ -47,7 +47,7 @@ namespace ResurcesLoading
             var key = gameData.CurrentLevel.LevelType;
             CurrentTileSet = (await Loader<TileSetConfig>(key.ToString())).Set;
             
-            BlankConfig = await Loader<TileConfig>("BlankTile");
+            BlankConfig = await Loader<TileConfig>("BlankTileTo"+key);//
         }
 
         private async UniTask<T> Loader<T>(string key)
@@ -68,7 +68,7 @@ namespace ResurcesLoading
             var key = gameData.CurrentLevel.LevelType;
             BackgroundTilePrefab = await Loader<GameObject>("BackgroundTilePrefab");
             TilePrefab = await Loader<GameObject>("TilePrefab");
-            FXRemoveTilePrefab = await Loader<GameObject>("FXPrefab"+key);//
+            FXRemoveTilePrefab = await Loader<GameObject>("FXPrefab"+key);
         }
         
         private async UniTask LoadBackgroundSprits()
@@ -81,7 +81,7 @@ namespace ResurcesLoading
                     break;
                 case LevelType.Gem:
                 case LevelType.Candy:    
-                    await Loader<Sprite>("BgTileSpriteCandy"); 
+                    BgTileSpriteCandy = await Loader<Sprite>("BgTileSpriteCandy"); 
                     break;
             }
         }

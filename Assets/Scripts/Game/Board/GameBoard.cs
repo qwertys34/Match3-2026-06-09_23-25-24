@@ -75,6 +75,7 @@ namespace Game.Board
                         
                         var blankTile = _tilePool.CreateBlankTile(_grid.GridToWorld(x, y), transform);
                         _grid.SetValue(x, y, blankTile);
+                        _animation.Reveal(blankTile.gameObject, 1f);
                     }
                     else
                     {
@@ -84,8 +85,6 @@ namespace Game.Board
                         _tilesToRefill.Add(tile);   
                     }
                     
-
-                     
                 }
             }   
         }

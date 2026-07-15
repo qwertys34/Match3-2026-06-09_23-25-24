@@ -58,7 +58,8 @@ namespace Game.UI
             _cts = new CancellationTokenSource();
             _audioManager.PlayWhoosh();
             panel.SetActive(true);
-            _animation.MoveUI(panelRectTransform, new Vector3(1, -110, 1), 0.5f, Ease.InOutBack);
+            if (panelRectTransform != null)
+                _animation.MoveUI(panelRectTransform, new Vector3(1, -110, 1), 0.5f, Ease.InOutBack);
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f), _cts.IsCancellationRequested);
             _audioManager.StopMusic();
             if (_isWinCondition)

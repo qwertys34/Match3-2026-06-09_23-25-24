@@ -36,20 +36,27 @@ namespace StateMachine.States
 
         public async void Enter()
         {
-            _cts = new CancellationTokenSource();
-            _audioManager.PlayWhoosh();
-            await SwapTiles(_grid.CurrentPosition, _grid.TargetPosition);
-            if (_matchFinder.CheckBoardForMatches(_grid) == false)
+            try
             {
-                _audioManager.PlayNoMatch();
-                await SwapTiles(_grid.TargetPosition, _grid.CurrentPosition);
-                _switcher.SwitchState<PlayerTurnState>();
+                _cts = new CancellationTokenSource();
+                _audioManager.PlayWhoosh();
+                await SwapTiles(_grid.CurrentPosition, _grid.TargetPosition);
+                if (_matchFinder.CheckBoardForMatches(_grid) == false)
+                {
+                    _audioManager.PlayNoMatch();
+                    await SwapTiles(_grid.TargetPosition, _grid.CurrentPosition);
+                    _switcher.SwitchState<PlayerTurnState>();
+                }
+                else
+                {
+                    _audioManager.PlayMatch();
+                    _gameProgress.SpendMoves();
+                    _switcher.SwitchState<RemoveTileState>();
+                }
             }
-            else
+            catch (Exception e)
             {
-                _audioManager.PlayMatch();
-                _gameProgress.SpendMoves();
-                _switcher.SwitchState<RemoveTileState>();
+                throw new Exception(e.Message);
             }
         }
 
@@ -64,8 +71,8 @@ namespace StateMachine.States
             _grid.SetValue(target.x, target.y, currentTile);
             _grid.SetValue(current.x, current.y, targetTile);
             
-            _animation.AnimateTile(currentTile, 1f);
-            _animation.AnimateTile(targetTile, 1f);
+            _ = _animation.AnimateTile(currentTile, 1f);
+            _ = _animation.AnimateTile(targetTile, 1f);
             
             await UniTask.WaitForSeconds(0.2f, _cts.IsCancellationRequested);
         }

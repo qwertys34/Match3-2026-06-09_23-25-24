@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb2b91681a23e2940ba35b2766cc9d9c
+    m_Address: BlankTileSpriteKingdom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dc9efa09148d4bd49a56c5c3291d3358
     m_Address: Coin
     m_ReadOnly: 0

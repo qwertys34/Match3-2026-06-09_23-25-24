@@ -17,15 +17,13 @@ namespace Game.Tiles
         private IAnimation _animation;
         private IObjectResolver _objectResolver;
         private CancellationTokenSource _cts;
-        private BlankTilesSetup _blankTilesSetup;
         
         public BackgroundTilesSetup(GameResurcesLoader gameResurcesLoader, IAnimation animation,
-            IObjectResolver objectResolver, BlankTilesSetup blankTilesSetup)
+            IObjectResolver objectResolver)
         {
             _gameResurcesLoader = gameResurcesLoader;
             _animation = animation;
             _objectResolver = objectResolver;
-            _blankTilesSetup = blankTilesSetup;
         }
 
         public void Dispose()
@@ -41,7 +39,6 @@ namespace Game.Tiles
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (_blankTilesSetup.Blanks[x, y]) continue;
                     var backgroundTile = CreateBackgroundTile(x, y, parent);
                     var delay = Random.Range(0.8f, 1.5f);
                     _ = _animation.Reveal(backgroundTile, delay);
@@ -66,6 +63,7 @@ namespace Game.Tiles
                         backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.DarkBgTileSpriteKingdom;
                     break;
                 case LevelType.Candy:
+                case LevelType.Gem:    
                     backgroundTile.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.BgTileSpriteCandy;
                     break;
             }

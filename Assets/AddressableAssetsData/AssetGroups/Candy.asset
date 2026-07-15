@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Candy
   m_GUID: ba288c04e9ca99443b5cc127bd1e3bc4
   m_SerializeEntries:
+  - m_GUID: 06cfbbc948ab7f941b88f7739d9fe358
+    m_Address: assets_candy_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25e9ea61851d05044be8ea6842d2e297
+    m_Address: assets_candy_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 369d8c113b3f4f14488ef533357902c0
     m_Address: Candy2
     m_ReadOnly: 0
@@ -35,8 +45,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d952613bc4215254aa31357120f870c6
-    m_Address: Assets/Sprites/Set3/assets_candy.png
+  - m_GUID: 8d729211db999a248960aa9884a812f0
+    m_Address: assets_candy_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc4172f1daa5a1a4a99874d8e144d3f1
+    m_Address: assets_candy_0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc58db5d6cc436945af5622bfb1e7ffa
+    m_Address: BlankTileSpriteCandy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9025c8442c25cf43a58cef6caaf229d
+    m_Address: assets_candy_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deaddf35a5c356945bd9a77dbf91a456
+    m_Address: BgTileSpriteCandy
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
