@@ -1,5 +1,6 @@
 using System;
 using Game.MatchTiles;
+using Game.Tiles;
 
 namespace Game.Score
 {
@@ -32,6 +33,11 @@ namespace Game.Score
             }
         }
 
+        public void CalculateAmountRemainingTiles(TileKind tileKind)
+        {
+            _gameProgress.AddOneFromTileRemoved(tileKind);
+        }
+
         public int CalculateScore(MatchDirection matchDirection)
         {
             return matchDirection switch
@@ -41,6 +47,20 @@ namespace Game.Score
                 MatchDirection.Multiply => 200,
                 _ => 0
             };
+        }
+
+        public int AddScoreForInteractabel(TileKind tileKind)
+        {
+            switch (tileKind)
+            {
+                case TileKind.Blank:
+                case  TileKind.Jelly:
+                case TileKind.RocketVertical:    
+                    _gameProgress.AddScore(50);
+                    return 50;
+            }
+
+            return 0;
         }
     }
 }

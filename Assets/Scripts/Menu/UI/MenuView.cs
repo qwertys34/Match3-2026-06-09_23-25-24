@@ -27,17 +27,18 @@ namespace Menu.UI
         {
             _cts = new CancellationTokenSource();
             
-            _animation.MoveUI(leftTower, new Vector3(231f, 405f, 0), 0.3f, Ease.InOutBack);
+            /*_animation.MoveUI(leftTower, new Vector3(231f, 405f, 0), 0.3f, Ease.InOutBack);
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
+            
             _animation.MoveUI(rightTower, new Vector3(-231f, 405f, 0), 0.2f, Ease.InOutBack);
-            
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
+            
             _animation.MoveUI(middleWall, new Vector3(0, 245f, 0), 0.3f, Ease.InOutBack);
-            
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
-            _animation.MoveUI(logo, new Vector3(-92, -40, 0), 0.3f, Ease.OutBounce);
             
-            await UniTask.Delay(TimeSpan.FromSeconds(0.6f), _cts.IsCancellationRequested);
+            _animation.MoveUI(logo, new Vector3(-92, -40, 0), 0.3f, Ease.OutBounce);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.6f), _cts.IsCancellationRequested);*/
+            
             foreach (var button in levelButtons)
             {
                 button.SetActive(true);

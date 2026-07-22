@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 125336db6b083e0408d503665c7f88bc
+    m_Address: Assets/UI/png/Window.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 321f1c7443bf1d34b8d8a05a617948f5
     m_Address: VContainerSettings
     m_ReadOnly: 0
@@ -40,16 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 76fe768f9a5f351489c5da9aab8e5b3b
-    m_Address: ButtonOrange
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 806bdf2f05a67cc44be0fb450d2bb2ab
-    m_Address: Tower
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8582c3c2c0546a246b613468e0cb363f
     m_Address: Deselect
     m_ReadOnly: 0
@@ -60,23 +55,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ae31f8a5fa9e2a840bdc5e97d9924f9e
-    m_Address: Logo
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b44b18d7b8f21204f973f30bf1da0bcf
-    m_Address: TopPanel
+  - m_GUID: b75c5c20836a707428c8fff3180e2a40
+    m_Address: Assets/UI/png/Button.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1aedf2de6ca14d418686c5dfdf060b4
     m_Address: Boot
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d04d203b7b773234aab92ed054829182
-    m_Address: Sky_LowPoly_01_Day_a
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -92,6 +77,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0fa25f00d83e2640bf5c827a0078ffb
     m_Address: Font
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: edabbe78e547a63429603ca5d042cbd3
+    m_Address: BG
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

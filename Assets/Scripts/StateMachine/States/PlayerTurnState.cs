@@ -30,6 +30,12 @@ namespace StateMachine.States
             _inputReader.Click += OnTileClick; 
             _inputReader.Swipe += OnSwiped;
         }
+        
+        public void Enter()
+        {
+            _inputReader.EnableInput(true);
+            DeselectTile();
+        }
 
         private void OnSwiped(Vector2 startPos, Vector2 endPos) 
         {
@@ -39,17 +45,11 @@ namespace StateMachine.States
             
             // Проверяем валидность позиций
             if (!IsValidPosition(startGridPos) || !IsValidPosition(endGridPos))
-            {
-                Debug.Log("Свайп за пределами сетки");
                 return;
-            }
             
             // Проверяем, что это не пустая клетка
             if (IsBlankPosition(startGridPos) || IsBlankPosition(endGridPos))
-            {
-                Debug.Log("Свайп по пустой клетке");
                 return;
-            }
             
             // Проверяем, что стартовая и конечная позиция — соседние тайлы
             if (IsSwappable(startGridPos, endGridPos))
@@ -59,10 +59,10 @@ namespace StateMachine.States
                 _grid.SetTargetPosition(endGridPos);
                 _animation.DoPunchAnimate(_grid.GetValue(startGridPos.x, startGridPos.y).gameObject,Vector3.one* 1.2f,0.2f);
                 _stateSwitcher.SwitchState<SwapTilesState>();
+                
             }
             else
             {
-                Debug.Log("Свайп не между соседними тайлами");
                 _audioManager.PlayClick(); // Звук ошибки
                 DeselectTile();
             }
@@ -87,7 +87,6 @@ namespace StateMachine.States
                 _grid.SetCurrentPosition(clickPosition);
                 var tile = _grid.GetValue(clickPosition.x, clickPosition.y);
                 _animation.AnimateTile(tile, 1.2f);
-                Debug.Log($"Выбрана клетка: {clickPosition}");
             }
             // Если кликнули по уже выбранной клетке — снимаем выделение
             else if (_grid.CurrentPosition == clickPosition)
@@ -103,7 +102,6 @@ namespace StateMachine.States
                 _grid.SetTargetPosition(clickPosition);
                 _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1f);
                 _stateSwitcher.SwitchState<SwapTilesState>();
-                Debug.Log($"Меняем {_grid.CurrentPosition} с {clickPosition}");
             }
             else
             {
@@ -113,19 +111,12 @@ namespace StateMachine.States
                 Debug.Log("Клик по несоседней клетке — выделение снято");
             }
         }
-
+        
         public void Dispose()
         {
             _inputReader.Click -= OnTileClick;
             _inputReader.Swipe -= OnSwiped;
             _inputReader.Dispose();
-        }
-
-        public void Enter()
-        {
-            _inputReader.EnableInput(true);
-            DeselectTile();
-            Debug.Log("PlayerTurnState Enter");
         }
 
         private void DeselectTile()
@@ -136,7 +127,6 @@ namespace StateMachine.States
             }
             _grid.SetCurrentPosition(_emptyPosition);
             _grid.SetTargetPosition(_emptyPosition);
-            Debug.Log("Тайл снят с выделения");
         }
 
         private bool IsSwappable(Vector2Int currentTilePos, Vector2Int targetTilePos) => 
@@ -150,10 +140,6 @@ namespace StateMachine.States
             gridPos.x >= 0 && gridPos.x < _grid.Width 
             && gridPos.y >= 0 && gridPos.y < _grid.Height;
 
-        public void Exit()
-        {
-            _inputReader.EnableInput(false);
-            Debug.Log("PlayerTurnState Exit");
-        }
+        public void Exit() => _inputReader.EnableInput(false);
     }
 }

@@ -6,7 +6,7 @@ namespace Game.Tiles
     {
         public TileKind[,]  tileKind {get; private set;}
 
-        public void SetupBlanks(LevelConfig levelConfig)
+        public void SetupInteractables(LevelConfig levelConfig)
         {
             tileKind = new TileKind[levelConfig.Width, levelConfig.Height];
             for (int i = 0; i < levelConfig.InteractableTilesLayout.Count; i++)

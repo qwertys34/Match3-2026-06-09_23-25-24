@@ -55,7 +55,7 @@ namespace StateMachine
                 new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager,
                     _fxPool, _gameBoard, _gameResurcesLoader),
                 new RefillGridState(this, _grid, _animation, _matchFinder, _tilePool,
-                    gameBoard.transform, _gameProgress, _audioManager),
+                    _gameBoard.transform, _gameProgress, _audioManager),
                 new WinState(_endGamePanelView),
                 new LooseState(_endGamePanelView)
             };

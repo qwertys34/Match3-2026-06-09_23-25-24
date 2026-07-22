@@ -1,4 +1,3 @@
-using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -27,6 +26,7 @@ namespace Menu.Levels
         
         private async UniTask LoadLevels(string key)
         {
+            
             if (_currentHandle.IsValid())
             {
                 Addressables.Release(_currentHandle);

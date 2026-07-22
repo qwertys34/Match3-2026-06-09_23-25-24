@@ -25,6 +25,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10e1aa6212aa5b04ca552f9b27659aae
+    m_Address: HorizontalRocketConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12a6ebe39c3b2a94ca516ad62ab9f57f
+    m_Address: JellyConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1461240925963d949a2314065f7dffc6
     m_Address: Remove
     m_ReadOnly: 0
@@ -45,11 +55,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4574703eb47557c40bacf1d1fea630ab
-    m_Address: window
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 598faee821ea45442a1d25491112ad3f
     m_Address: Loose
     m_ReadOnly: 0
@@ -61,7 +66,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7964637459338c14d82cbef49a03a462
-    m_Address: BlankTile
+    m_Address: BlankConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9305656f08440484b810021122fbee63
+    m_Address: VerticalRocketConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -85,8 +95,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: eaff6a8fbb08f044a8dea6a031ab89d3
-    m_Address: Button
+  - m_GUID: d952613bc4215254aa31357120f870c6
+    m_Address: Assets/Sprites/Set1/assets_candy.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4cf6c3787fec3a40849465f543c01a2
+    m_Address: BombConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -8,6 +8,7 @@ namespace Animations
     public interface IAnimation
     {
         UniTask Reveal(GameObject target, float delay);
+        UniTask RevealUI(GameObject target, float delay, Vector3 scale);
         
         UniTask HideTile(GameObject target);
         
@@ -22,6 +23,6 @@ namespace Animations
         UniTask ShakeAnimate(Transform target, float duration, Ease ease);
         
         UniTask MoveObject(GameObject go, Vector3 position, float duration, Ease ease);
-        
+        UniTask MoveObject(GameObject go, Vector3 position, float duration);
     }
 }

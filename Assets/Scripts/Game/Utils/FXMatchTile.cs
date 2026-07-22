@@ -1,7 +1,6 @@
 using System.Collections;
 using Animations;
 using DG.Tweening;
-using Levels;
 using TMPro;
 using UnityEngine;
 
@@ -9,7 +8,6 @@ namespace Game.Utils
 {
     public class FXMatchTile : MonoBehaviour
     {
-        public LevelType levelName;
         private WaitForSeconds _timer = new WaitForSeconds(1f);
         public TMP_Text amountText;
         private IAnimation _animation;

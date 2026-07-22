@@ -49,8 +49,8 @@ namespace StateMachine.States
                 }
                 else
                 {
-                    _matchFinder.CheckToBlankTiles(_grid); // ***
-                    //await AnimateBlankTile();//111
+                    _matchFinder.CheckToBlankTiles(_grid); 
+                    _matchFinder.CheckOnRocketTiles(_grid);
                     _audioManager.PlayMatch();
                     _gameProgress.SpendMoves();
                     _switcher.SwitchState<RemoveTileState>();

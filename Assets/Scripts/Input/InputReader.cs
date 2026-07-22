@@ -35,12 +35,10 @@ namespace Input
             if (distance > SWIPE_THRESHOLD)
             {
                 Swipe?.Invoke(_startPos, _endPos);
-                Debug.Log($"Свайп: {_startPos} -> {_endPos}");
             }
             else
             {
                 Click?.Invoke();
-                Debug.Log("Клик (короткое касание)");
             }
         }
         

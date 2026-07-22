@@ -30,7 +30,7 @@ namespace StateMachine.States
 
         public void Exit()
         {
-            Debug.Log("Board was created!");
+            
         }
     }
 }

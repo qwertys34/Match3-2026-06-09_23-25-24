@@ -22,6 +22,20 @@ namespace Animations
             await tween;
             _cts.Cancel();
         }
+        
+        public async UniTask RevealUI(GameObject target, float delay, Vector3 scale)
+        {
+            _cts = new CancellationTokenSource();
+            target.transform.localScale = Vector3.zero * 0.1f;
+            var tween = target.transform.DOScale(Vector3.one*1.5f, delay).SetEase(Ease.OutBounce);
+            var tween2 = target.transform.DOScale(scale, delay).SetEase(Ease.OutBounce);
+            var suq = DOTween.Sequence();
+            await suq.Append(tween).Join(tween2);
+            _activeTweens.Add(tween);
+            _activeTweens.Add(tween2);
+            //await suq;
+            _cts.Cancel();
+        }
 
         public async UniTask HideTile(GameObject target)
         {
@@ -70,6 +84,13 @@ namespace Animations
         public async UniTask MoveObject(GameObject go, Vector3 position, float duration, Ease ease)
         {
             var tween = go.transform.DOLocalMove(position, duration).SetEase(ease);
+            _activeTweens.Add(tween);
+            await tween;
+        }
+        
+        public async UniTask MoveObject(GameObject go, Vector3 position, float duration)
+        {
+            var tween = go.transform.DOLocalMove(position, duration);
             _activeTweens.Add(tween);
             await tween;
         }

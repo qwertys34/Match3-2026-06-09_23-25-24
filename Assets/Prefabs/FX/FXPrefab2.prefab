@@ -59,7 +59,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1383114907
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &7754786388680017769
@@ -253,6 +253,26 @@ PrefabInstance:
       propertyPath: lengthInSec
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 2683792633923369600, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2683792633923369600, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2683792633923369600, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1383114907
+      objectReference: {fileID: 0}
+    - target: {fileID: 4335222642309611850, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4335222642309611850, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1383114907
+      objectReference: {fileID: 0}
     - target: {fileID: 4421910533046978035, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -311,7 +331,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7395905164468411626, guid: d797682e482cf4145b1a7dd930be7b38, type: 3}
       propertyPath: m_Name
-      value: FXPrefabCandy
+      value: FXPrefab2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

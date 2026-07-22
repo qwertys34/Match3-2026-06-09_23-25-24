@@ -69,9 +69,12 @@ namespace StateMachine.States
                     if (_grid.GetValue(x, y)) continue;
                     for (int h = y+1; h < _grid.Height; h++)
                     {
-                        if (_grid.GetValue(x, h) == null) continue;
-                        if (_grid.GetValue(x, h).IsInteractable == false) continue;
                         var tile = _grid.GetValue(x, h);
+                        if (tile == null) continue;
+                        if (tile.IsInteractable == false 
+                            || tile.tileKind == TileKind.Blank 
+                            || (tile.tileKind == TileKind.Jelly && !((JellyTile)tile).IsSimpleTile())) continue;
+                        
                         _grid.SetValue(x, y, tile);
                         _animation.MoveTile(tile, _grid.GridToWorld(x, y), Ease.InBack);
                         _grid.SetValue(x, h, null);
@@ -95,16 +98,17 @@ namespace StateMachine.States
                     var tile = _tilePool.GetTile(_grid.GridToWorld(x,y), _parent);
                     _grid.SetValue(x, y, tile);
                     tile.gameObject.SetActive(true);
-                    await _animation.Reveal(tile.gameObject, 0.1f);
+                    _ = _animation.Reveal(tile.gameObject, 0.1f);
                     _audioManager.PlayPop();
-                    await UniTask.Delay(TimeSpan.FromSeconds(0.05f), _cts.IsCancellationRequested);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.1f), _cts.IsCancellationRequested);
                 }
             }
+            await UniTask.Delay(TimeSpan.FromSeconds(0.1f), _cts.IsCancellationRequested);
         }
 
         private void CheckEndGame()
         {
-            var check = _gameProgress.CheckGoalScore();
+            var check = _gameProgress.CheckGoalAmount();
             if (check)
                 _stateSwitcher.SwitchState<WinState>();
             else if (_gameProgress.Moves <= 0)

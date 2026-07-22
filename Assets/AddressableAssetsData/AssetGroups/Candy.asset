@@ -20,8 +20,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bd31de54e694bf42a6ffe3dd58b4b2e
+    m_Address: BlankTileSpriteTwo
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25e9ea61851d05044be8ea6842d2e297
     m_Address: RedCandySprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33b11ec24cf91d74087a4775284e6e11
+    m_Address: BlankTileSpriteOne
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -35,8 +45,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4d1882e43a5fb524d9e30b9a31f2fb4e
-    m_Address: BlankTileSpriteTwo
+  - m_GUID: 7effab95ae656604788f31ba7446adcf
+    m_Address: VerticalRocketTileSprite
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -55,13 +65,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a755d5ac6a68dad43b983fe1f7c9793a
-    m_Address: BackgroundTileSprite
+  - m_GUID: 9f97541a69190c14e99a7c51c3bce597
+    m_Address: BombTileSprite
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a911c6140480be540a82c4dd1b2cd197
-    m_Address: BlankTileSpriteThree
+  - m_GUID: a755d5ac6a68dad43b983fe1f7c9793a
+    m_Address: BackgroundTileSprite
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -70,18 +80,43 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc58db5d6cc436945af5622bfb1e7ffa
-    m_Address: BlankTileSpriteOne
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9025c8442c25cf43a58cef6caaf229d
     m_Address: GreenCandySprite
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7829c59801a4c94484db63870dcaad5
+    m_Address: HorizontalRocketTileSprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9a3c33cdecbb9e4085d7371694fe20b
+    m_Address: BlueCandyHorizontal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e23d8004e7ee0414f961e6f749790e8e
+    m_Address: BlueCandyHorizontalSprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2847ef491e106d4c91496524abe5312
+    m_Address: BlankTileSpriteThree
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed8cfa7bc4cc7af42a5458f88918c462
+    m_Address: JellyTileSpriteOne
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: edabcfc91bdff564d81f59f57e17747e
     m_Address: GreenCandy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb474b4aac46367499dd3a0a9d65ed73
+    m_Address: JellyTileSpriteTwo
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

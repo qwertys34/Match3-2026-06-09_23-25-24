@@ -1,4 +1,3 @@
-using DG.Tweening;
 using ResurcesLoading;
 using UnityEngine;
 
@@ -26,6 +25,6 @@ namespace Game.Tiles
                 GetComponent<SpriteRenderer>().sprite = resurcesLoader.BlankTileSpriteThree;
         }
 
-        public bool CanAlive() => State > 3 == false;
+        public bool CanAlive() => !(State > 3);
     }
 }

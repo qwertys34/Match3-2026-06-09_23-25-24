@@ -7,6 +7,7 @@ namespace Levels
     [CreateAssetMenu(fileName = "LevelConfig", menuName = "Configs/LevelConfig")]
     public class LevelConfig : ScriptableObject
     {
+
         [Header("Grid")]
         [SerializeField] private int width;
         [SerializeField] private int height;
@@ -14,24 +15,22 @@ namespace Levels
         
         [Header("Level")]
         [SerializeField] private int levelNumber;
-        [SerializeField] private LevelType levelType;
-        [SerializeField] private int goalScore;
+        [SerializeField] private int scoreForOneStar;
+        [SerializeField] private int scoreForTwoStar;
+        [SerializeField] private int scoreForThreeStar;
         [SerializeField] private int moves;
+        public int amountStartBlank;
+        public int amountStartJelly;
 
         public int Width => width;
         public int Height => height;
         public List<InteractableTile> InteractableTilesLayout => interactableTilesLayout;
-
+        
         public int LevelNumber => levelNumber;
-        public LevelType LevelType => levelType;
-        public int GoalScore => goalScore;
+        public int ScoreForOneStar => scoreForOneStar;
+        public int ScoreForTwoStar => scoreForTwoStar;
+        public int ScoreForThreeStar => scoreForThreeStar;
         public int Moves => moves;
     }
-
-    public enum LevelType
-    {
-        Kingdom,
-        Gem,
-        Candy
-    }
+    
 }

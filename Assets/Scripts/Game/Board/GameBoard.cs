@@ -74,13 +74,38 @@ namespace Game.Board
                     {
                         case TileKind.Blank:
                             if (_grid.GetValue(x, y)) continue; 
-                            var blankTile = _tilePool.CreateBlankTile(_grid.GridToWorld(x, y), transform);
+                            var blankTile = _tilePool.CreateTile<BlankTile>(_grid.GridToWorld(x, y), transform);
                             _grid.SetValue(x, y, blankTile);
                             _animation.Reveal(blankTile.gameObject, 1f);
                             break;
+                        case TileKind.RocketVertical:
+                            var vertivalRocketTile = _tilePool.CreateTile<VerticalRocketTile>(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, vertivalRocketTile);
+                            _animation.Reveal(vertivalRocketTile.gameObject, 1f);
+                            _tilesToRefill.Add(vertivalRocketTile); // нужно добавлять в рефил,
+                                                            // чтоб удалялись объекты, которые могу заметчиться
+                            break;
+                        case TileKind.RocketHorizontal:
+                            var horizontalRocketTile = _tilePool.CreateTile<HorizontalRocketTile>(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, horizontalRocketTile);
+                            _animation.Reveal(horizontalRocketTile.gameObject, 1f);
+                            _tilesToRefill.Add(horizontalRocketTile); // нужно добавлять в рефил,
+                                                            // чтоб удалялись объекты, которые могу заметчиться
+                            break;
                         case TileKind.Jelly:
+            // У jelly-тайла конфиг обычного тайла, а поле tileKind = TileKind.Jelly                
+                            var jellyTile = _tilePool.CreateTile<JellyTile>(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, jellyTile);
+                            _animation.Reveal(jellyTile.gameObject, 1f);
+                            _animation.Reveal(jellyTile.JellyTransform.gameObject, 1f);
+                            _tilesToRefill.Add(jellyTile);
                             break;
                         case TileKind.Bomb:
+                            var bombTile = _tilePool.CreateTile<BombTile>(_grid.GridToWorld(x, y), transform);
+                            _grid.SetValue(x, y, bombTile);
+                            _animation.Reveal(bombTile.gameObject, 1f);
+                            _tilesToRefill.Add(bombTile); // нужно добавлять в рефил,
+                            // чтоб удалялись объекты, которые могу заметчиться
                             break;
                         case TileKind.Normal:
                             var tile = _tilePool.GetTile(_grid.GridToWorld(x, y), transform);

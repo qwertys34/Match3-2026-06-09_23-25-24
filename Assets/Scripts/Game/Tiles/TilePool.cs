@@ -8,7 +8,7 @@ namespace Game.Tiles
 {
     public class TilePool
     {
-        private List<Tile> _tilePool = new List<Tile>();
+        private List<Tile> _tilePool = new();
         private IObjectResolver _objectResolver;
         private GameResurcesLoader _gameResurcesLoader;
         
@@ -30,37 +30,49 @@ namespace Game.Tiles
                 return _tilePool[i];
             }
             
-            var newTile = CreateTile(position, parent);
+            var newTile = CreateTile<Tile>(position, parent);
             return newTile;
         }
 
-        public Tile CreateBlankTile(Vector3 position, Transform parent)
-        {
-            var blankPrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
-                position, Quaternion.identity, parent);
-            var blankTile = blankPrefab.AddComponent<BlankTile>();
-            blankTile.SetTileKind(TileKind.Blank);
-            blankTile.SetTileConfig(_gameResurcesLoader.BlankConfig);
-            return blankTile;
-        }
-        
-        //CreateBombTile()
-        //Create....
-        //Create....
-        
-        //Create....
-        
-        //Create....
-        
-        private Tile CreateTile(Vector3 position, Transform parent)
+        public Tile CreateTile<T>(Vector3 position, Transform parent) where T : Tile
         {
             var tilePrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
                 position, Quaternion.identity, parent);
-            var tile = tilePrefab.GetComponent<Tile>();
-            tile.SetTileKind(TileKind.Normal);
-            tile.SetTileConfig(GetRandomTileConfig());
-            _tilePool.Add(tile);
-            return tile;
+            T tile = tilePrefab.AddComponent<T>();
+            switch (typeof(T).Name)
+            {
+                case nameof(Tile):
+                    tile.SetTileConfig(GetRandomTileConfig());
+                    tile.SetTileKind(TileKind.Normal);
+                    break;
+                case nameof(BlankTile):
+                    tile.SetTileConfig(_gameResurcesLoader.BlankConfig);
+                    tile.SetTileKind(TileKind.Blank);
+                    break;
+                case nameof(VerticalRocketTile):
+                    tile.SetTileConfig(_gameResurcesLoader.VerticalRocketConfig);
+                    tile.SetTileKind(TileKind.RocketVertical);
+                    break;
+                case nameof(HorizontalRocketTile):
+                    tile.SetTileConfig(_gameResurcesLoader.HorizontalRocketConfig);
+                    tile.SetTileKind(TileKind.RocketHorizontal);
+                    break;
+                case nameof(BombTile):
+                    tile.SetTileConfig(_gameResurcesLoader.BombConfig);
+                    tile.SetTileKind(TileKind.Bomb);
+                    break;
+                case  nameof(JellyTile):
+                    tile.SetTileConfig(GetRandomTileConfig());
+                    tile.SetTileKind(TileKind.Jelly); // чтобы получить, что тайл jelly нужно всегда брать поле tileKind 
+                    var jellyPrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
+                        position, Quaternion.identity, tilePrefab.transform);
+                    jellyPrefab.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.JellyTileSpriteOne;
+                    tile.JellyTransform = jellyPrefab.transform;
+                    break;
+                default: Debug.Log("Nothink such tile");
+                    break;
+            }
+            return  tile;
         }
 
         private TileConfig GetRandomTileConfig() => _gameResurcesLoader.CurrentTileSet[Random

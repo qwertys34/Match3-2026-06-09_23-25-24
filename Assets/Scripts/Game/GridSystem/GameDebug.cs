@@ -24,7 +24,7 @@ namespace Game.GridSystem
         {
             var debugText = new GameObject("DebugText",  typeof(TextMeshPro));
             debugText.transform.SetParent(parent);
-            debugText.transform.position = position + new Vector3(0, 0, -1);
+            debugText.transform.position = position + new Vector3(0, 0, -3);
             debugText.transform.forward = Vector3.forward;
             
             var TMP = debugText.GetComponent<TextMeshPro>();
