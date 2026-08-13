@@ -37,6 +37,9 @@ namespace ResurcesLoading
         // bomb
         public TileConfig BombConfig  { get; private set; }
         
+        // superCandy
+        public TileConfig SuperCandyConfig  { get; private set; }
+        
         private readonly GameData gameData;
         private CancellationTokenSource _cts;
         
@@ -65,6 +68,7 @@ namespace ResurcesLoading
             HorizontalRocketConfig = await Loader<TileConfig>("HorizontalRocketConfig");
             JellyConfig = await Loader<TileConfig>("JellyConfig");
             BombConfig = await Loader<TileConfig>("BombConfig");
+            SuperCandyConfig = await Loader<TileConfig>("SuperCandyConfig");
         }
 
         private async UniTask<T> Loader<T>(string key)
@@ -106,7 +110,37 @@ namespace ResurcesLoading
             var key = gameData.CurrentLevel.LevelNumber;
             BackgroundTilePrefab = await Loader<GameObject>("BackgroundTilePrefab");
             TilePrefab = await Loader<GameObject>("TilePrefab");
-            FXRemoveTilePrefab = await Loader<GameObject>("FXPrefab"+key);
+
+            string targetKey = "FXPrefab" + key;
+            string fallbackKey = "FXPrefab1";
+    
+            bool exists = await AssetExists(targetKey);
+
+            if (exists)
+                FXRemoveTilePrefab = await Loader<GameObject>(targetKey);
+            else
+                FXRemoveTilePrefab = await Loader<GameObject>(fallbackKey);
+        }
+        
+        private async UniTask<bool> AssetExists(string key)
+        {
+            try
+            {
+                var handle = Addressables.LoadResourceLocationsAsync(key);
+                await handle.ToUniTask();
+        
+                bool exists = handle.Status == AsyncOperationStatus.Succeeded 
+                              && handle.Result != null 
+                              && handle.Result.Count > 0;
+        
+                Addressables.Release(handle);
+                return exists;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Ошибка при проверке ассета {key}: {ex.Message}");
+                return false;
+            }
         }
         
         private async UniTask LoadSprits()

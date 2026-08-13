@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5aaabeefcf0cf9d4f8db1a54bab42cf7
+    m_Address: LevelEndless
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d25d0bc2409fc24fa536889d6e6f3cb
     m_Address: Level3
     m_ReadOnly: 0
@@ -70,13 +75,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d1140447619b9754cbec4029dcd76dd5
-    m_Address: Menu
+  - m_GUID: c531fa492502bce4685a2d5685937a34
+    m_Address: LevelLast
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d916e09d081bd0b42aa3eda6883a95fa
-    m_Address: MenuMusic
+  - m_GUID: d1140447619b9754cbec4029dcd76dd5
+    m_Address: Menu
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

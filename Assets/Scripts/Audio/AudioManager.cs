@@ -24,13 +24,22 @@ namespace Audio
         [SerializeField] private AudioClip remove;
         [SerializeField] private AudioClip win;
         [SerializeField] private AudioClip loose;
+        [SerializeField] private AudioClip explosion;
         
         private bool _isEnabledSound = true;
+
+        public void StopAllSounds()
+        {
+            normalSoundSource.Stop();
+            pitchSoundSource.Stop();
+            musicSource.Stop();
+        }
         
         public void PlayClick() => PlayNormalPitch(click);
         public void PlayDeselect() => PlayNormalPitch(deselect);
         public void PlayMatch() => PlayNormalPitch(match);
         public void PlayNoMatch() => PlayNormalPitch(noMatch);
+        public void PlayExplosion() => PlayNormalPitch(explosion);
         public void PlayWhoosh() => PlayRandomPitch(whoosh);
         public void PlayPop() => PlayRandomPitch(pop);
         public void PlayStopMusic() => PlayNormalPitch(stopMusic);
@@ -75,5 +84,6 @@ namespace Audio
         }
         
         private void PlayNormalPitch(AudioClip clip) => normalSoundSource.PlayOneShot(clip);
+
     }
 }

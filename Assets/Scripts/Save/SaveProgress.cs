@@ -1,16 +1,16 @@
 using Data;
-using ResurcesLoading;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Save
 {
-    public class SaveProgress
+    public class SaveProgress 
     {
         private GameData _gameData;
 
-        public SaveProgress(GameData gameData) =>
+        public SaveProgress(GameData gameData)
+        {
             _gameData = gameData;
+        }
 
         private const string CurrentLevel = "level";
         private const string IsEnableSound = "sound";
@@ -19,8 +19,9 @@ namespace Save
         {
             PlayerPrefs.SetInt(CurrentLevel, _gameData.CurrentLevelIndex);
             PlayerPrefs.SetInt(IsEnableSound, _gameData.IsEnabledSound ? 1 : 0);
+            PlayerPrefs.Save();
         }
-        
+
         public void Load()
         {
             if (PlayerPrefs.GetInt(CurrentLevel) > 1)
@@ -29,5 +30,13 @@ namespace Save
             
             _gameData.SetEnabledSound(PlayerPrefs.GetInt(IsEnableSound) == 1);
         }
+        
+        public void ResetProgress()
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("Reset all data progress");
+        }
+        
     }
 }

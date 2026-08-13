@@ -1,6 +1,6 @@
+using Cysharp.Threading.Tasks;
 using Game.Board;
 using Game.Tiles;
-using UnityEngine;
 using Grid = Game.GridSystem.Grid;
 
 namespace StateMachine.States
@@ -21,13 +21,18 @@ namespace StateMachine.States
             _grid = grid;
         }
 
-        public async void Enter()
+        public void Enter()
         {
-            await _backgroundTilesSetup.SetupBackgroundTiles(_grid.Width, _grid.Height, _gameBoard.transform);
-            _gameBoard.CreateBoard();
-            _stateMachine.SwitchState<PlayerTurnState>();
+            EnterAsync().Forget();
         }
 
+        private async UniTaskVoid EnterAsync()
+        {
+            await _backgroundTilesSetup.SetupBackgroundTiles(_grid.Width, _grid.Height, _gameBoard.transform);
+            await _gameBoard.CreateBoard();
+            _stateMachine.SwitchState<PlayerTurnState>();
+        }
+        
         public void Exit()
         {
             

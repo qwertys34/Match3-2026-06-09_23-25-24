@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Game
   m_GUID: 4972ebf088ea89942b130ae7999f04ec
   m_SerializeEntries:
+  - m_GUID: 0988346e2405d08498173bf8d5b809f2
+    m_Address: Explosion
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0ed313967f6966d439c3559b8d9c63d3
     m_Address: FXPrefab2
     m_ReadOnly: 0
@@ -40,11 +45,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 224e63c073d061f42a78dab028b63684
-    m_Address: GameMusic
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2ac17fe3a64d85349812ead37c8aa3c2
     m_Address: Click
     m_ReadOnly: 0
@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 504ef5b47f14a5242a8c42f5ef8e5c6b
+    m_Address: GameMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 598faee821ea45442a1d25491112ad3f
     m_Address: Loose
     m_ReadOnly: 0
@@ -62,6 +67,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6ef8855d6478acf439ed3b59cf9a4bcd
     m_Address: Candy
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75bafa407832eef47a7b3cf6d6e14274
+    m_Address: MenuMusic
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -87,6 +97,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 99c9720ab356a0642a771bea13969a05
     m_Address: Game
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a732bdcee6b531843b42684d77e07d21
+    m_Address: SuperCandyConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

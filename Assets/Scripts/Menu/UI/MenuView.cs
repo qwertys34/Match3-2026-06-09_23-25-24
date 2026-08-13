@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Animations;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Input;
 using UnityEngine;
 using VContainer;
 
@@ -19,6 +21,8 @@ namespace Menu.UI
 
         private AnimationManager _animation;
         private CancellationTokenSource _cts;
+        private bool current;
+        private bool newOrientation;
         
         [Inject] private void Configure(AnimationManager animationManager) => 
             _animation = animationManager;
@@ -27,25 +31,35 @@ namespace Menu.UI
         {
             _cts = new CancellationTokenSource();
             
-            /*_animation.MoveUI(leftTower, new Vector3(231f, 405f, 0), 0.3f, Ease.InOutBack);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
+            current = InputReader.IsVectical();
+            if (current)
+                _animation.MoveUI(logo, new Vector3(0, -481.7f, 0), 0.6f, Ease.OutBounce);
+            else 
+                _animation.MoveUI(logo, new Vector3(0, -392.8f, 0), 0.6f, Ease.OutBounce);
             
-            _animation.MoveUI(rightTower, new Vector3(-231f, 405f, 0), 0.2f, Ease.InOutBack);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
+            await UniTask.Delay(TimeSpan.FromSeconds(0.6f), _cts.IsCancellationRequested);
             
-            _animation.MoveUI(middleWall, new Vector3(0, 245f, 0), 0.3f, Ease.InOutBack);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.4f), _cts.IsCancellationRequested); 
-            
-            _animation.MoveUI(logo, new Vector3(-92, -40, 0), 0.3f, Ease.OutBounce);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.6f), _cts.IsCancellationRequested);*/
+            bool isLandscape = Screen.width > Screen.height;
+            Vector3 targetScale = isLandscape ? Vector3.one : Vector3.one * 0.86f;
             
             foreach (var button in levelButtons)
             {
-                button.SetActive(true);
-                await _animation.Reveal(button, 0.2f);
+                await _animation.RevealUI(button, 0.2f, targetScale);
             }
             
             _cts.Cancel();
+        }
+
+        private void Update()
+        {
+            newOrientation = InputReader.IsVectical();
+            if (current != newOrientation)
+            {
+                current = newOrientation;
+                var newPos = Vector3.zero;
+                newPos.y = newOrientation ? -478f : -392.8f; 
+                logo.anchoredPosition = newPos;
+            }
         }
 
         private void OnDestroy()

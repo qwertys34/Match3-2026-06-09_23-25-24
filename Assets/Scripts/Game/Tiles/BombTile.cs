@@ -17,8 +17,9 @@ namespace Game.Tiles
     public class BombTile : Tile, IDisposable
     {
         private Sequence _bombSequence;
-        private Sequence _explodeSequence;
+        private List<Sequence> _explodeSequences = new(); 
         private bool _isExploded = false;
+        
         public async UniTask Explode(Grid grid, GameResurcesLoader resurcesLoader,
             IAnimation animation, ScoreCalculator scoreCalculator, FXPool fxPool,
             GameBoard gameBoard, AudioManager audioManager, MatchFinder matchFinder)
@@ -46,11 +47,20 @@ namespace Game.Tiles
                     switch (tile.tileKind)
                     {
                         case TileKind.Bomb:
-                            await AnimateBomb(tile.gameObject);
-                            tile.gameObject.SetActive(false);
-                            //grid.SetValue(tile.transform.position, null); пока просто уничтожаю, не создавая новые по игре
-                            Destroy(tile.gameObject);
-                            _isExploded = true;
+                            if (tile.transform == transform)
+                            {
+                                await AnimateBomb(tile.gameObject);
+                                audioManager.PlayExplosion();
+                                tile.gameObject.SetActive(false);
+                                grid.SetValue(tile.transform.position,
+                                    null); //пока просто уничтожаю, не создавая новые по игре
+                                await animation.HideTile(tile.gameObject);
+                                _isExploded = true;
+                                break;
+                            }
+                            // если в радиус попала другая бомба
+                            await ((BombTile)tile).Explode(grid, resurcesLoader, animation, scoreCalculator, fxPool,
+                                gameBoard, audioManager, matchFinder);
                             break;
                         case TileKind.Jelly:
                             var jellyTile = (JellyTile)tile;
@@ -88,14 +98,12 @@ namespace Game.Tiles
                             break;
                         default:
                             audioManager.PlayRemove();
-                            //await AnimateExplode(tile.gameObject, animation);
                             await UniTask.WaitUntil(() => _isExploded); // ждем пока не пройдет анимация
                             // взрыва бомбы
-                            await AnimateExplode(tile.gameObject);
-                            //await animation.HideTile(tile.gameObject);
+                            //await AnimateExplode(tile.gameObject);
                             var amntScore = scoreCalculator.CalculateScore(matchFinder.CurrentMatchResult.MatchDirection);
                             fxPool.GetFX(tile.transform.position, gameBoard.transform, amntScore);
-                            tile.gameObject.SetActive(false);
+                            await animation.HideTile(tile.gameObject);
                             grid.SetValue(tile.transform.position, null);
                             break;
                     }
@@ -122,7 +130,7 @@ namespace Game.Tiles
                 .Join(sr.DOColor(nextColor, 0.2f))
                 .SetEase(Ease.InQuint);
     
-            await _bombSequence.Play();
+            await _bombSequence.Play().ToUniTask();
         }
         
         private async UniTask AnimateExplode(GameObject obj)
@@ -130,16 +138,18 @@ namespace Game.Tiles
             var nextColor = Color.black; //new Color(98f, 98f, 98f, 0f);
             var sr = obj.GetComponent<SpriteRenderer>();
             
-            _explodeSequence = DOTween.Sequence(sr.DOColor(nextColor, 0.4f)).SetEase(Ease.InExpo);
-            await _explodeSequence.Play();
+            var explodeSequence = DOTween.Sequence(sr.DOColor(nextColor, 0.3f)).SetEase(Ease.InCubic);
+            _explodeSequences.Add(explodeSequence);
+            await explodeSequence.Play().ToUniTask();
         }
 
         public void Dispose()
         {
             _bombSequence.Kill();
-            _explodeSequence.Kill();
+            foreach (var sequence in _explodeSequences) 
+                sequence.Kill();
             _bombSequence =  null;
-            _explodeSequence = null;
+            _explodeSequences = null;
         }
     }
 }

@@ -68,8 +68,8 @@ namespace StateMachine.States
             var currentTile = _grid.GetValue(current.x, current.y);
             var targetTile = _grid.GetValue(target.x, target.y);
             
-            AnimateTile(currentTile, target);
-            AnimateTile(targetTile, current);
+            AnimateTile(currentTile, target, true, out var tileSrOne, out var modefireSrOne);
+            AnimateTile(targetTile, current, false, out var tileSrTwo, out var modefireSrTwo);
             
             _grid.SetValue(target.x, target.y, currentTile);
             _grid.SetValue(current.x, current.y, targetTile);
@@ -78,11 +78,19 @@ namespace StateMachine.States
             _ = _animation.AnimateTile(targetTile, 1f);
             
             await UniTask.WaitForSeconds(0.2f, _cts.IsCancellationRequested);
+            
+            tileSrOne.sortingOrder = 0;
+            modefireSrOne.sortingOrder = 0;
         }
         
-        private void AnimateTile(Tile tile, Vector2Int position)
+        private void AnimateTile(Tile tile, Vector2Int position, bool isFirst, out SpriteRenderer tileSR,
+            out SpriteRenderer modefireSR)
         {
-            _animation.MoveTile(tile, _grid.GridToWorld(position.x, position.y), Ease.OutCubic);
+            tileSR = tile.GetComponentInParent<SpriteRenderer>();
+            tileSR.sortingOrder = isFirst ? 1 : 0;
+            modefireSR = tile.gameObject.GetComponentInChildren<SpriteRenderer>();
+            modefireSR.sortingOrder = isFirst ? 1 : 0;
+            _animation.MoveTile(tile,_grid.GridToWorld(position.x, position.y),Ease.OutCubic);
         }
         
         public void Dispose()

@@ -11,10 +11,10 @@ namespace Menu.Levels
         public List<LevelConfig> LevelConfigs => levelConfigs;    
         
 
-        private void OnValidate()
+        /*private void OnValidate()
         {
             if (levelConfigs.Count != 5)
                 Debug.LogWarning("amount level configs must be 5");
-        }
+        }*/
     }
 }

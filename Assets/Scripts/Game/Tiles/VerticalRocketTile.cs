@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Animations;
 using Audio;
 using Cysharp.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Game.Tiles
     {
         public async UniTask Run(Grid grid, IAnimation animation, ScoreCalculator scoreCalculator,
             FXPool fxPool, MatchFinder matchFinder, GameBoard gameBoard, AudioManager audioManager,
-            GameResurcesLoader gameResurcesLoader)
+            GameResurcesLoader gameResurcesLoader, List<Tile> horizontalRocketTilesToRemove)
         {
             var tilePos = grid.WorldToGrid(transform.position);
             
@@ -36,16 +37,16 @@ namespace Game.Tiles
             
             // Запускаем движение вверх и вниз параллельно
             var upTask = MoveProjectile(upProjectile, grid, animation, scoreCalculator, fxPool, 
-                audioManager, gameBoard, gameResurcesLoader, tilePos, 1); // +1 для движения вверх
+                audioManager, gameBoard, gameResurcesLoader, tilePos, 1, horizontalRocketTilesToRemove); // +1 для движения вверх
             var downTask = MoveProjectile(downProjectile, grid, animation, scoreCalculator, fxPool, 
-                audioManager, gameBoard, gameResurcesLoader, tilePos, -1); // -1 для движения вниз
+                audioManager, gameBoard, gameResurcesLoader, tilePos, -1, horizontalRocketTilesToRemove); // -1 для движения вниз
             
             await UniTask.WhenAll(upTask, downTask);
             
             // Уничтожаем оригинальный тайл только после завершения всех операций
             if (this != null && gameObject != null)
             {
-                Destroy(gameObject);
+                await animation.HideTile(gameObject);
             }
         }
         
@@ -57,14 +58,14 @@ namespace Game.Tiles
             
             // Копируем спрайт
             var spriteRenderer = projectile.AddComponent<SpriteRenderer>();
-            var originalRenderer = GetComponent<SpriteRenderer>();
+            /*var originalRenderer = GetComponent<SpriteRenderer>();
             if (originalRenderer != null)
             {
                 spriteRenderer.sprite = originalRenderer.sprite;
                 spriteRenderer.sortingOrder = originalRenderer.sortingOrder;
                 spriteRenderer.sortingLayerID = originalRenderer.sortingLayerID;
                 spriteRenderer.sortingLayerName = originalRenderer.sortingLayerName;
-            }
+            }*/
             
             // Копируем масштаб
             projectile.transform.localScale = transform.localScale;
@@ -75,7 +76,7 @@ namespace Game.Tiles
         private async UniTask MoveProjectile(GameObject projectile, Grid grid, IAnimation animation, 
             ScoreCalculator scoreCalculator, FXPool fxPool, AudioManager audioManager, 
             GameBoard gameBoard, GameResurcesLoader gameResurcesLoader, 
-            Vector2Int startPos, int direction)
+            Vector2Int startPos, int direction, List<Tile> horizontalRocketTilesToRemove)
         {
             var currentPos = startPos;
             
@@ -116,7 +117,6 @@ namespace Game.Tiles
                     if (!blankTile.CanAlive())
                     {
                         await animation.HideTile(blankTile.gameObject);
-                        Destroy(blankTile.gameObject);
                         // BlankTile полностью разрушен, убираем его с сетки
                         grid.SetValue(nextTile.x, nextTile.y, null);
                         scoreCalculator.CalculateAmountRemainingTiles(TileKind.Blank);
@@ -131,7 +131,6 @@ namespace Game.Tiles
                     {
                         // BlankTile еще существует, уничтожаем снаряд
                         await animation.HideTile(projectile);
-                        Destroy(projectile);
                         return;
                     }
                 }
@@ -155,7 +154,6 @@ namespace Game.Tiles
                     {
                         // JellyTile полностью разрушен, убираем его с сетки
                         await animation.HideTile(jellyTile.gameObject);
-                        Destroy(jellyTile.gameObject);
                         grid.SetValue(nextTile.x, nextTile.y, null);
                         
                         // Двигаем снаряд на место бывшего JellyTile
@@ -169,10 +167,11 @@ namespace Game.Tiles
                     {
                         // JellyTile еще существует, уничтожаем снаряд
                         await animation.HideTile(projectile);
-                        Destroy(projectile);
                         return;
                     }
                 }
+                /*else if (nextTileValue.tileKind == TileKind.RocketHorizontal)
+                    horizontalRocketTilesToRemove.Remove(nextTileValue);*/
                 
                 // Обычный тайл - уничтожаем его и двигаем снаряд на его место
                 audioManager.PlayRemove();
@@ -192,10 +191,9 @@ namespace Game.Tiles
             }
             
             // Уничтожаем снаряд в конце пути, так как он не должен оставаться на поле
-            if (projectile != null)
+            if (projectile != null && projectile.TryGetComponent(out SpriteRenderer sr))
             {
                 await animation.HideTile(projectile);
-                Destroy(projectile);
             }
         }
     }

@@ -9,9 +9,9 @@ namespace Levels
     {
 
         [Header("Grid")]
-        [SerializeField] private int width;
-        [SerializeField] private int height;
-        [SerializeField] private List<InteractableTile> interactableTilesLayout;
+        public int width;
+        public int height;
+        public List<InteractableTile> interactableTilesLayout;
         
         [Header("Level")]
         [SerializeField] private int levelNumber;

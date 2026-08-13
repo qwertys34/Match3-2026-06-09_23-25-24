@@ -6,12 +6,12 @@ namespace Game.Tiles
     [Serializable]
     public class InteractableTile 
     {
-        [SerializeField] private int xPos;
-        [SerializeField] private int yPos;
-        [SerializeField] private TileKind tileKind;
+        public int xPos;
+        public int yPos;
+        public TileKind tileKind;
         
-        public int XPos => xPos;
+        /*public int XPos => xPos;
         public int YPos => yPos;
-        public TileKind TileKind => tileKind;
+        public TileKind TileKind => tileKind;*/
     }
 }

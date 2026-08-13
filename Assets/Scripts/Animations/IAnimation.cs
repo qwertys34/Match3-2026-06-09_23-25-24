@@ -11,12 +11,13 @@ namespace Animations
         UniTask RevealUI(GameObject target, float delay, Vector3 scale);
         
         UniTask HideTile(GameObject target);
+        UniTask HideTileUI(GameObject target);
         
         UniTask DoPunchAnimate(GameObject target, Vector3 scale, float duretion);
         
         void MoveUI(RectTransform target, Vector3 position, float duration, Ease ease);
 
-        UniTask AnimateTile(Tile tile, float value);
+        UniTask AnimateTile(Tile tile, float value, float duretion = 0.3f);
         
         void MoveTile(Tile tile, Vector3 position, Ease ease);
         
@@ -24,5 +25,8 @@ namespace Animations
         
         UniTask MoveObject(GameObject go, Vector3 position, float duration, Ease ease);
         UniTask MoveObject(GameObject go, Vector3 position, float duration);
+
+        UniTask AnimateSuperCandyMatch(Transform target, SpriteRenderer sr,
+            float value, float duration);
     }
 }

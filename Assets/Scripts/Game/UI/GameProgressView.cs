@@ -15,6 +15,7 @@ namespace Game.UI
     public class GameProgressView : MonoBehaviour
     {
         [SerializeField] private TMP_Text movesText;
+        [SerializeField] private TMP_Text numberText;
         [SerializeField] private GameObject progressUIPanel;
         
         [SerializeField] private Transform parent;
@@ -22,6 +23,7 @@ namespace Game.UI
         private IAnimation _animation;
         private GameResurcesLoader _gameResurcesLoader;
         private List<GameObject> _listTiles = new();
+        private List<GameObject> _stashListTiles = new();
         [SerializeField] private List<Image> starsImageList;
         
         [Inject] public void Construct(GameProgress gameProgress, IAnimation animation,
@@ -62,7 +64,7 @@ namespace Game.UI
             {
                 var tile = _listTiles.FirstOrDefault(tile
                     => tile.GetComponent<Image>().sprite.name == "BlankTileSpriteOne");
-                await _animation.HideTile(tile);
+                await _animation.HideTileUI(tile);
                 _listTiles.Remove(tile);
                 Destroy(tile);
             }
@@ -70,13 +72,36 @@ namespace Game.UI
             {
                 var tile = _listTiles.FirstOrDefault(tile
                                     => tile.GetComponent<Image>().sprite.name == "JellyTileSpriteOne");
-                await _animation.HideTile(tile);
+                await _animation.HideTileUI(tile);
                 _listTiles.Remove(tile);
                 Destroy(tile);
             }
             
+            var activeTiles = _listTiles.FindAll(tile => tile.activeInHierarchy);
+            var newTile = _listTiles.FirstOrDefault(newTile
+                => !newTile.activeInHierarchy);
+            if (newTile == true && activeTiles.Count < 5)
+            {
+                newTile.SetActive(true);
+                await _animation.RevealUI(newTile.gameObject, 0.5f, Vector3.one);
+            }
+            
+            var nextTile = _listTiles.FirstOrDefault(nextTile
+                => !nextTile.activeInHierarchy);
+            if (nextTile == false) numberText.gameObject.SetActive(false);
+            else
+            {
+                numberText.transform.SetSiblingIndex(5);
+                await _animation.RevealUI(numberText.gameObject, 0.5f, Vector3.one * 1.57f);
+            }
         }
 
+        private void DrawNumber()
+        {
+            numberText.transform.SetParent(parent);
+            numberText.gameObject.SetActive(true);
+        }
+        
         private async UniTask CreateGoalTiles()
         {
             // Очищаем существующие тайлы
@@ -84,11 +109,17 @@ namespace Game.UI
             {
                 Destroy(tile);
             }
+            foreach (var tile in _stashListTiles)
+            {
+                Destroy(tile);
+            }
             _listTiles.Clear();
+            _stashListTiles.Clear();
 
             var blankAmount = _gameProgress.CurrentAmountBlank;
             var jellyAmount = _gameProgress.CurrentAmountJelly;
-    
+
+            bool moreThanFive = false;
             for (int i = 0; i < blankAmount; i++)
             {
                 var instance = new GameObject("BlankTile", typeof(RectTransform));
@@ -98,6 +129,13 @@ namespace Game.UI
                 image.preserveAspect = true; // Сохраняем пропорции спрайта
         
                 _listTiles.Add(instance); 
+                
+                if (i == 4)
+                {
+                    DrawNumber();
+                    moreThanFive = true;
+                }
+                else if (i > 4) instance.gameObject.SetActive(false);
             }
             for (int i = 0; i < jellyAmount; i++)
             {
@@ -108,6 +146,13 @@ namespace Game.UI
                 image.preserveAspect = true;
         
                 _listTiles.Add(instance);
+                
+                if (i == 4 && !numberText.gameObject.activeSelf)
+                {
+                    DrawNumber();
+                    moreThanFive = true;
+                }
+                if (i > 4 || moreThanFive) instance.gameObject.SetActive(false);
             }
         }
 

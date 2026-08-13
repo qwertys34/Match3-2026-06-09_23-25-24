@@ -1,6 +1,6 @@
 namespace Game.Tiles
 {
-    public class SuperCandyTile
+    public class SuperCandyTile : Tile
     {
         
     }

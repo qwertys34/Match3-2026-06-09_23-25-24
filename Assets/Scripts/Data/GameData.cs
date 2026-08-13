@@ -1,4 +1,6 @@
 using System;
+using Cysharp.Threading.Tasks;
+using Game.Utils;
 using Levels;
 
 namespace Data
@@ -9,8 +11,11 @@ namespace Data
         public int CurrentLevelIndex { get; private set; }
         public bool IsEnabledSound { get; private set; }
 
-        public GameData()
+        private GeneratorLevelConfig _generatorLevelConfig;
+        
+        public GameData(GeneratorLevelConfig generatorLevelConfig)
         {
+            _generatorLevelConfig = generatorLevelConfig;
             IsEnabledSound = true;  
             CurrentLevelIndex = 1;
         }
@@ -27,5 +32,8 @@ namespace Data
         public void SetEnabledSound(bool enabled) => IsEnabledSound = enabled;
         
         public void SetCurrentLevel(LevelConfig levelConfig) => CurrentLevel = levelConfig;
+        public async UniTask SetRandomLevel(LevelConfig levelConfig) => 
+            CurrentLevel = await _generatorLevelConfig.GenerateLevelConfig(levelConfig);
+        
     }
 }

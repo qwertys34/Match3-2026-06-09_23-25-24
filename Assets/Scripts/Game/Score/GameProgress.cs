@@ -10,6 +10,7 @@ namespace Game.Score
         public event Func<UniTask> OnNewGoalToStar;
         public event Action OnMove;
         public event Func<TileKind, UniTask> AmountTilesChanged;
+        public bool IsWin { get; private set; } = false;
         
         public int Score { get; private set; }
         public int GoalAmountScore { get; private set; }
@@ -62,8 +63,13 @@ namespace Game.Score
         public bool CheckGoalAmount()
         {
             if (CurrentAmountJelly == 0 && CurrentAmountBlank == 0)
+            {
+                IsWin = true;
                 return true;
-            return false;
+            }
+
+            IsWin = false;
+            return false; // false
         }
 
         public void SpendMoves()

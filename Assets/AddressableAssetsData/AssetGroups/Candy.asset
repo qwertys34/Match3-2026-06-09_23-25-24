@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Candy
   m_GUID: ba288c04e9ca99443b5cc127bd1e3bc4
   m_SerializeEntries:
+  - m_GUID: 037efd37a788d80448db2fb163da7d23
+    m_Address: SuperCandySprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 06cfbbc948ab7f941b88f7739d9fe358
     m_Address: VioletCandySprite
     m_ReadOnly: 0

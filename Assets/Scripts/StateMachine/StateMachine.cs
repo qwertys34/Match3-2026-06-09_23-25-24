@@ -52,6 +52,8 @@ namespace StateMachine
                 new PrepareState(this, _gameBoard, _backgroundTilesSetup, _grid),
                 new PlayerTurnState(this, _animation, _grid, _audioManager), 
                 new SwapTilesState(this, _grid, _animation, _matchFinder, _gameProgress, _audioManager),
+                new MergeTilesState(this, _grid, _animation, _matchFinder, _gameProgress, _audioManager,
+                    _scoreCalculator, _fxPool, _gameBoard, _gameResurcesLoader),
                 new RemoveTileState(this, _grid, _animation, _matchFinder, _scoreCalculator, _audioManager,
                     _fxPool, _gameBoard, _gameResurcesLoader),
                 new RefillGridState(this, _grid, _animation, _matchFinder, _tilePool,

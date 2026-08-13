@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3879149cabc44c69b19419071fe98fbb, type: 3}
+  m_Name: LevelLast
+  m_EditorClassIdentifier: Assembly-CSharp::Levels.LevelConfig
+  width: 7
+  height: 7
+  interactableTilesLayout: []
+  levelNumber: 0
+  scoreForOneStar: 0
+  scoreForTwoStar: 0
+  scoreForThreeStar: 0
+  moves: 0
+  amountStartBlank: 0
+  amountStartJelly: 0

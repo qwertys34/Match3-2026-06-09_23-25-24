@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using Game.Tiles;
-using ResurcesLoading;
 using UnityEngine;
 using Grid = Game.GridSystem.Grid;
 
@@ -19,31 +17,22 @@ namespace Game.MatchTiles
     
     public class MatchFinder
     {
-        public List<Tile> TilesToRemove { get; }
-        public List<BlankTile> BlankTilesToRemove { get; }
-        public List<Tile> VerticalRocketTilesToRemove { get; }
-        public List<Tile> HorizontalRocketTilesToRemove { get; }
+        public List<Tile> TilesToRemove { get; } = new();
+        public List<BlankTile> BlankTilesToRemove { get; } = new();
+        public List<Tile> VerticalRocketTilesToRemove { get; } = new();
+        public List<Tile> HorizontalRocketTilesToRemove { get; } = new();
         public MatchResult CurrentMatchResult { get; private set; }
-        
-        private GameResurcesLoader _resurcesLoader;
-        public MatchFinder(GameResurcesLoader resurcesLoader)
-        {
-            TilesToRemove = new List<Tile>();
-            BlankTilesToRemove =  new List<BlankTile>();
-            VerticalRocketTilesToRemove =  new List<Tile>();
-            HorizontalRocketTilesToRemove =  new List<Tile>();
-            _resurcesLoader = resurcesLoader;
-        }
-        
+
         public bool CheckBoardForMatches(Grid grid)
         {
             var hasMatched = false;
             ClearAnyTilesToRemove();
+            
             for (int x = 0; x < grid.Width; x++)
             {
                 for (int y = 0; y < grid.Height; y++)
                 {
-                    var tile =  grid.GetValue(x, y);
+                    var tile = grid.GetValue(x, y);
                     if (tile == null) continue;
                     if (tile.IsMatched || tile.IsInteractable == false) continue;
                     
@@ -51,30 +40,69 @@ namespace Game.MatchTiles
                     if (matchTiles.ConectedTiles.Count < 3) continue;
                     
                     CurrentMatchResult = matchTiles;
-                    TilesToRemove.AddRange(matchTiles.ConectedTiles);
-                    foreach (var connectedTile in matchTiles.ConectedTiles) 
-                        connectedTile.SetMatch(true);
+                    
+                    // Добавляем только уникальные тайлы
+                    foreach (var connectedTile in matchTiles.ConectedTiles)
+                    {
+                        if (!TilesToRemove.Contains(connectedTile))
+                        {
+                            TilesToRemove.Add(connectedTile);
+                            connectedTile.SetMatch(true);
+                        }
+                    }
                     hasMatched = true;
                 }
             }
             return hasMatched;
         }
+
+        public List<Tile> FindAnyTilesWithSprite(SpriteRenderer sr, Grid grid)
+        {
+            List<Tile> matchingTiles = new();
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    var tile = grid.GetValue(x, y);
+                    if (tile != null && tile.GetComponent<SpriteRenderer>().sprite == sr.sprite)
+                    {
+                        matchingTiles.Add(tile);
+                    }
+                }
+            }
+            return matchingTiles;
+        }
         
         public void ClearAnyTilesToRemove()
         {
+            // Сбрасываем флаги у всех тайлов
             foreach (var tile in TilesToRemove)
             {
-                tile.SetMatch(false);
+                if (tile != null)
+                    tile.SetMatch(false);
+            }
+
+            foreach (var vertRocket in VerticalRocketTilesToRemove)
+            {
+                if (vertRocket != null)
+                    vertRocket.SetMatch(false);
             }
             
+            foreach (var horizRocket in HorizontalRocketTilesToRemove)
+            {
+                if (horizRocket != null)
+                    horizRocket.SetMatch(false);
+            }
+            
+            // Очищаем все списки
             TilesToRemove.Clear();
             BlankTilesToRemove.Clear();
             VerticalRocketTilesToRemove.Clear();
             HorizontalRocketTilesToRemove.Clear();
+            ClearCurrentMatchResult();
         }
         
-        public void ClearCurrentMatchResult() => 
-            CurrentMatchResult.ConectedTiles.Clear();
+        public void ClearCurrentMatchResult() => CurrentMatchResult?.ConectedTiles.Clear();
 
         public MatchResult FindConnectedTiles(Tile tile, Grid grid)
         {
@@ -82,25 +110,25 @@ namespace Game.MatchTiles
             connectedTiles.Add(tile);
             var tileGridPos = grid.WorldToGrid(tile.transform.position);
             
-            CheckDirection(tileGridPos, Vector2Int.right, grid, tile,  connectedTiles);
-            CheckDirection(tileGridPos, Vector2Int.left, grid, tile,  connectedTiles);
-            if (connectedTiles.Count == 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
-                    MatchDirection.Horizontal); 
-            if (connectedTiles.Count > 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up,
-                    MatchDirection.LongHorizontal); 
+            // Проверяем горизонтальное направление
+            CheckDirection(tileGridPos, Vector2Int.right, grid, tile, connectedTiles);
+            CheckDirection(tileGridPos, Vector2Int.left, grid, tile, connectedTiles);
             
+            if (connectedTiles.Count == 3)
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up, MatchDirection.Horizontal); 
+            if (connectedTiles.Count > 3)
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.up, MatchDirection.LongHorizontal); 
+            
+            // Проверяем вертикальное направление
             connectedTiles.Clear();
             connectedTiles.Add(tile);
-            CheckDirection(tileGridPos, Vector2Int.up, grid, tile,  connectedTiles);
-            CheckDirection(tileGridPos, Vector2Int.down, grid, tile,  connectedTiles);
+            CheckDirection(tileGridPos, Vector2Int.up, grid, tile, connectedTiles);
+            CheckDirection(tileGridPos, Vector2Int.down, grid, tile, connectedTiles);
+            
             if (connectedTiles.Count == 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
-                    MatchDirection.Vertical);
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right, MatchDirection.Vertical);
             if (connectedTiles.Count > 3)
-                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right,
-                    MatchDirection.LongVertical);
+                return CheckForMultiResult(connectedTiles, grid, Vector2Int.right, MatchDirection.LongVertical);
             
             connectedTiles.Clear();
             return new MatchResult(connectedTiles, MatchDirection.None);
@@ -111,42 +139,72 @@ namespace Game.MatchTiles
         {
             foreach (var tile in connectedTiles)
             {
-                var tilePos =  grid.WorldToGrid(tile.transform.position);
+                var tilePos = grid.WorldToGrid(tile.transform.position);
                 var multiConnectedTiles = new List<Tile>();
                 multiConnectedTiles.Add(tile); 
+                
                 CheckDirection(tilePos, direction, grid, tile, multiConnectedTiles);
                 CheckDirection(tilePos, direction * -1, grid, tile, multiConnectedTiles);
+                
                 if (multiConnectedTiles.Count <= 2) continue;
-                multiConnectedTiles.AddRange(connectedTiles);
+                
+                // Добавляем только уникальные тайлы
+                foreach (var connectedTile in connectedTiles)
+                {
+                    if (!multiConnectedTiles.Contains(connectedTile))
+                    {
+                        multiConnectedTiles.Add(connectedTile);
+                    }
+                }
                 return new MatchResult(multiConnectedTiles, MatchDirection.Multiply); 
             }
             
             return new MatchResult(connectedTiles, matchDirection);
-        }//
+        }
         
         private void CheckDirection(Vector2Int position, Vector2Int direction,
             Grid grid, Tile tile, List<Tile> connectedTiles)
         {
             var x = position.x + direction.x;
             var y = position.y + direction.y;
+            
             while (grid.IsValidPosition(x, y))
             {
                 var neighbourTile = grid.GetValue(x, y);
                 if (neighbourTile == null) break;
-                if (neighbourTile.IsInteractable && neighbourTile.IsMatched == false &&
-                    tile.TileConfig == neighbourTile.TileConfig 
-                    || neighbourTile.TileConfig.TileKind == TileKind.RocketVertical
-                    || neighbourTile.TileConfig.TileKind == TileKind.RocketHorizontal
-                    || neighbourTile.TileConfig.TileKind == TileKind.Bomb) 
+                
+                // Проверяем, совместим ли соседний тайл
+                bool isCompatible = false;
+                
+                if (neighbourTile.IsInteractable && !neighbourTile.IsMatched)
                 {
-                    connectedTiles.Add(neighbourTile);
+                    // Проверяем совпадение по конфигурации
+                    if (tile.TileConfig == neighbourTile.TileConfig)
+                    {
+                        isCompatible = true;
+                    }
+                    // Или это специальный тайл
+                    else if (neighbourTile.TileConfig.TileKind == TileKind.RocketVertical ||
+                             neighbourTile.TileConfig.TileKind == TileKind.RocketHorizontal ||
+                             neighbourTile.TileConfig.TileKind == TileKind.Bomb)
+                    {
+                        isCompatible = true;
+                    }
+                }
+                
+                if (isCompatible)
+                {
+                    // Проверяем, не добавлен ли уже этот тайл
+                    if (!connectedTiles.Contains(neighbourTile))
+                    {
+                        connectedTiles.Add(neighbourTile);
+                    }
                     x += direction.x;
                     y += direction.y;
                 }
                 else 
                     break;
             }
-            
         }
         
         #region BlankTileLogic
@@ -154,28 +212,29 @@ namespace Game.MatchTiles
         {
             foreach (var tile in TilesToRemove)
             {
+                if (tile == null) continue;
+                
                 var tileGridPos = grid.WorldToGrid(tile.transform.position);
                 CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.left);
                 CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.right);
                 CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.up);
                 CheckDirectionOnBlankTiles(grid, tileGridPos, Vector2Int.down);
-                
             }
         }
 
-        private void CheckDirectionOnBlankTiles(Grid grid,Vector2Int position, Vector2Int direction)
+        private void CheckDirectionOnBlankTiles(Grid grid, Vector2Int position, Vector2Int direction)
         {
             var checkedPos = position + direction;
             if (!grid.IsValidPosition(checkedPos.x, checkedPos.y)) return;
                 
-            var tile = grid.GetValue(checkedPos.x,checkedPos.y);
-            if (tile.tileKind == TileKind.Blank)
+            var tile = grid.GetValue(checkedPos.x, checkedPos.y);
+            if (tile != null && tile.tileKind == TileKind.Blank)
             {
                 BlankTile blankTile = (BlankTile)tile;
-                //blankTile.ChangeState(_resurcesLoader);
-                if (!BlankTilesToRemove.Contains(blankTile)) // ПОМОЕМУ ЭТО ВООБЩЕ НЕ НУЖНО
-                //(СПИСОК ОТЧИЩАЕТСЯ ВСЕГДА) И НАПИСАН ТУТ БРЕД.  
+                if (!BlankTilesToRemove.Contains(blankTile))
+                {
                     BlankTilesToRemove.Add(blankTile);
+                }
             }
         }
         #endregion
@@ -183,45 +242,50 @@ namespace Game.MatchTiles
         #region RocketTileLogic
         public void CheckOnRocketTiles(Grid grid)
         {
-            foreach (var tile in TilesToRemove.ToList())
+            // Идем с конца списка, чтобы безопасно удалять элементы
+            for (int i = TilesToRemove.Count - 1; i >= 0; i--)
             {
+                var tile = TilesToRemove[i];
+                if (tile == null) continue;
+                
                 if (tile.tileKind == TileKind.RocketVertical)
                 {
-                    VerticalRocketTilesToRemove.Add(tile);
-                    TilesToRemove.Remove(tile);
+                    if (!VerticalRocketTilesToRemove.Contains(tile))
+                    {
+                        VerticalRocketTilesToRemove.Add(tile);
+                    }
+                    tile.SetMatch(false); // Сбрасываем флаг
+                    TilesToRemove.RemoveAt(i);
                 }
                 else if (tile.tileKind == TileKind.RocketHorizontal)
                 {
-                    HorizontalRocketTilesToRemove.Add(tile);
-                    TilesToRemove.Remove(tile);
+                    if (!HorizontalRocketTilesToRemove.Contains(tile))
+                    {
+                        HorizontalRocketTilesToRemove.Add(tile);
+                    }
+                    tile.SetMatch(false); // Сбрасываем флаг
+                    TilesToRemove.RemoveAt(i);
                 }
             }
         }
         
-        private List<Tile> CheckDirectionRocketLine(Grid grid, Vector2Int rocketPos, GameResurcesLoader resurcesLoader)
+        // Дополнительный метод для очистки Rocket тайлов после их использования
+        public void ClearRocketTiles()
         {
-            List<Tile> tiles = new List<Tile>();
-            for (int i = rocketPos.x; i < grid.Width; i+=rocketPos.x)
+            foreach (var vertRocket in VerticalRocketTilesToRemove)
             {
-                for (int j = rocketPos.y; j < grid.Height; j++)
-                {
-                    var tile = grid.GetValue(i, j);
-                    if (tile ==null) break;
-                    //if (tile.tileKind == TileKind.Rocket) continue;
-                    
-                    tiles.Add(tile);
-                    /*if (tile.tileKind == TileKind.Blank)
-                    {
-                        var blankTile = (BlankTile)tile;
-                        blankTile.ChangeState(resurcesLoader);
-                    }
-                    else if (tile.tileKind == TileKind.Normal)
-                    {
-
-                    }*/
-                }
+                if (vertRocket != null)
+                    vertRocket.SetMatch(false);
             }
-            return tiles;
+            
+            foreach (var horizRocket in HorizontalRocketTilesToRemove)
+            {
+                if (horizRocket != null)
+                    horizRocket.SetMatch(false);
+            }
+            
+            VerticalRocketTilesToRemove.Clear();
+            HorizontalRocketTilesToRemove.Clear();
         }
         #endregion
     }

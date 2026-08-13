@@ -11,9 +11,9 @@ namespace Game.Tiles
         RocketVertical,
         RocketHorizontal,
         Bomb,
-        SupperCandy,
-        Bow,
-        Boomerang
+        SuperCandy,
+        /*Bow,
+        Boomerang*/
     }
 }
 

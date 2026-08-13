@@ -39,26 +39,35 @@ namespace StateMachine.States
 
         private void OnSwiped(Vector2 startPos, Vector2 endPos) 
         {
-            
+            DeselectTile();
             var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(startPos));
             var endGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(endPos));
             
-            // Проверяем валидность позиций
             if (!IsValidPosition(startGridPos) || !IsValidPosition(endGridPos))
                 return;
             
-            // Проверяем, что это не пустая клетка
             if (IsBlankPosition(startGridPos) || IsBlankPosition(endGridPos))
                 return;
             
-            // Проверяем, что стартовая и конечная позиция — соседние тайлы
             if (IsSwappable(startGridPos, endGridPos))
             {
-                _audioManager.PlayClick();
-                _grid.SetCurrentPosition(startGridPos);
-                _grid.SetTargetPosition(endGridPos);
-                _animation.DoPunchAnimate(_grid.GetValue(startGridPos.x, startGridPos.y).gameObject,Vector3.one* 1.2f,0.2f);
-                _stateSwitcher.SwitchState<SwapTilesState>();
+                if (_grid.GetValue(startGridPos.x, startGridPos.y).TileConfig.TileKind == TileKind.Normal &&
+                    _grid.GetValue(endGridPos.x, endGridPos.y).TileConfig.TileKind == TileKind.SuperCandy)
+                {
+                    _audioManager.PlayClick();
+                    _grid.SetCurrentPosition(startGridPos);
+                    _grid.SetTargetPosition(endGridPos);
+                    _animation.AnimateTile(_grid.GetValue(endGridPos.x, endGridPos.y), 1f);
+                    _stateSwitcher.SwitchState<MergeTilesState>();
+                }
+                else
+                {
+                    _audioManager.PlayClick();
+                    _grid.SetCurrentPosition(startGridPos);
+                    _grid.SetTargetPosition(endGridPos);
+                    _animation.AnimateTile(_grid.GetValue(endGridPos.x, endGridPos.y), 1f);
+                    _stateSwitcher.SwitchState<SwapTilesState>();
+                }
                 
             }
             else
@@ -70,7 +79,6 @@ namespace StateMachine.States
 
         private void OnTileClick()
         {
-            
             var clickPosition = _grid.WorldToGrid(
                 _camera.ScreenToWorldPoint(_inputReader.GetPosition()));
 
@@ -80,7 +88,6 @@ namespace StateMachine.States
                 return;
             }
             
-            // Если ни одна клетка не выбрана
             if (_grid.CurrentPosition == _emptyPosition)
             {
                 _audioManager.PlayClick();
@@ -88,27 +95,33 @@ namespace StateMachine.States
                 var tile = _grid.GetValue(clickPosition.x, clickPosition.y);
                 _animation.AnimateTile(tile, 1.2f);
             }
-            // Если кликнули по уже выбранной клетке — снимаем выделение
             else if (_grid.CurrentPosition == clickPosition)
             {
                 _audioManager.PlayClick();
                 DeselectTile();
-                Debug.Log("Снято выделение");
             }
-            // Если кликнули по другой клетке и она соседняя — меняем
             else if (_grid.CurrentPosition != clickPosition && IsSwappable(_grid.CurrentPosition, clickPosition))
             {
-                _audioManager.PlayClick();
-                _grid.SetTargetPosition(clickPosition);
-                _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1f);
-                _stateSwitcher.SwitchState<SwapTilesState>();
+                if (_grid.GetValue(_grid.CurrentPosition.x, _grid.CurrentPosition.y).TileConfig.TileKind == TileKind.Normal &&
+                    _grid.GetValue(clickPosition.x, clickPosition.y).TileConfig.TileKind == TileKind.SuperCandy)
+                {
+                    _audioManager.PlayClick();
+                    _grid.SetTargetPosition(clickPosition);
+                    _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1f);
+                    _stateSwitcher.SwitchState<MergeTilesState>();
+                }
+                else
+                {
+                    _audioManager.PlayClick();
+                    _grid.SetTargetPosition(clickPosition);
+                    _animation.AnimateTile(_grid.GetValue(clickPosition.x, clickPosition.y), 1f);
+                    _stateSwitcher.SwitchState<SwapTilesState>();
+                }
             }
             else
             {
-                // Кликнули по несоседней клетке — снимаем выделение
                 _audioManager.PlayClick();
                 DeselectTile();
-                Debug.Log("Клик по несоседней клетке — выделение снято");
             }
         }
         

@@ -4,8 +4,10 @@ using System.Threading;
 using Animations;
 using Audio;
 using Cysharp.Threading.Tasks;
+using Data;
 using DG.Tweening;
 using Game.Score;
+using Menu.Levels;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +30,10 @@ namespace Game.UI
         private AudioManager _audioManager;
         private GameProgress _gameProgress;
         private EndGame _endGame;
+        private SetupLevelSequence _setupLevelSequence;
+
+        private IAsyncSceneLoading _sceneLoading;
+        
         private CancellationTokenSource _cts;
         private bool _isWinCondition;
 
@@ -35,12 +41,14 @@ namespace Game.UI
         private readonly string _lose = "You have loose";
         
         [Inject] public void Construct(IAnimation animation, AudioManager audioManager, EndGame endGame,
-            GameProgress gameProgress)
+            GameProgress gameProgress, IAsyncSceneLoading sceneLoading, SetupLevelSequence setupLevelSequence)
         {
             _animation = animation;
             _audioManager = audioManager;
             _endGame = endGame;
             _gameProgress = gameProgress;
+            _sceneLoading = sceneLoading;
+            _setupLevelSequence = setupLevelSequence;
         }
 
         private async UniTask RevelStarsAnimate()
@@ -77,14 +85,25 @@ namespace Game.UI
 
         private void ExitGame() => _endGame.End(_isWinCondition, menuButton);
 
-        private void NextLevel()
+        private async void NextLevel()
         {
+            if (_setupLevelSequence.isOneLevel) RestartLevel(); // если последний lvl(бесконечный),
+            // перезагружаем
             
+            if (_gameProgress.IsWin && !_sceneLoading.IsLastLevel(_setupLevelSequence))
+            {
+                await _sceneLoading.LoadNextScene(_audioManager, _setupLevelSequence);
+            }
+            else
+            {
+                nextLevelButton.interactable = false;
+                nextLevelButton.enabled = false;
+            }
         }
 
-        private void RestartLevel()
+        private async void RestartLevel()
         {
-            
+            await _sceneLoading.RestartScene();
         }
 
         public async void ShowEndGamePanel(bool isWinCondition)

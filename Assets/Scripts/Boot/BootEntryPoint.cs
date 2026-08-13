@@ -22,6 +22,7 @@ namespace Boot
         {
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            //_saveProgress.ResetProgress(); 
             _saveProgress.Load();
             DOTween.SetTweensCapacity(5000, 100);
             await _sceneLoading.LoadAsync(Scenes.MENU);

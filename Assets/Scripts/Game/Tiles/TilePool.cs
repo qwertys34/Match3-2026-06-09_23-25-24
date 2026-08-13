@@ -11,30 +11,34 @@ namespace Game.Tiles
         private List<Tile> _tilePool = new();
         private IObjectResolver _objectResolver;
         private GameResurcesLoader _gameResurcesLoader;
-        
         public TilePool(IObjectResolver objectResolver,  GameResurcesLoader gameResurcesLoader)
         {
             _objectResolver = objectResolver;
             _gameResurcesLoader = gameResurcesLoader;
         }
-
-        public Tile GetTile(Vector3 position, Transform parent)
+        
+        public T GetTile<T>(Vector3 position, Transform parent) where T : Tile
         {
+            var type = typeof(T);
             for (int i = 0; i < _tilePool.Count; i++)
             {
-                if (_tilePool[i].gameObject.activeInHierarchy) continue;
-                    
-                _tilePool[i].SetTileConfig(GetRandomTileConfig());
-                _tilePool[i].transform.position = position;
-                _tilePool[i].transform.SetParent(parent);
-                return _tilePool[i];
+                var tile = _tilePool[i].GetComponent<T>();
+                
+                if (_tilePool[i].gameObject.activeInHierarchy || tile.GetType() != type) continue;
+                if (type == typeof(Tile)) tile.SetTileConfig(GetRandomTileConfig());
+                tile.transform.position = position;
+                tile.transform.SetParent(parent);
+                tile.transform.localScale = Vector3.zero;
+                tile.gameObject.SetActive(true);
+                return tile;
             }
             
-            var newTile = CreateTile<Tile>(position, parent);
+            var newTile = CreateTile<T>(position, parent);
+            _tilePool.Add(newTile);
             return newTile;
         }
-
-        public Tile CreateTile<T>(Vector3 position, Transform parent) where T : Tile
+        
+        private T CreateTile<T>(Vector3 position, Transform parent) where T : Tile
         {
             var tilePrefab = _objectResolver.Instantiate(_gameResurcesLoader.TilePrefab,
                 position, Quaternion.identity, parent);
@@ -61,6 +65,10 @@ namespace Game.Tiles
                     tile.SetTileConfig(_gameResurcesLoader.BombConfig);
                     tile.SetTileKind(TileKind.Bomb);
                     break;
+                case nameof(SuperCandyTile):
+                    tile.SetTileConfig(_gameResurcesLoader.SuperCandyConfig);
+                    tile.SetTileKind(TileKind.SuperCandy);
+                    break;
                 case  nameof(JellyTile):
                     tile.SetTileConfig(GetRandomTileConfig());
                     tile.SetTileKind(TileKind.Jelly); // чтобы получить, что тайл jelly нужно всегда брать поле tileKind 
@@ -69,10 +77,10 @@ namespace Game.Tiles
                     jellyPrefab.GetComponent<SpriteRenderer>().sprite = _gameResurcesLoader.JellyTileSpriteOne;
                     tile.JellyTransform = jellyPrefab.transform;
                     break;
-                default: Debug.Log("Nothink such tile");
+                default: Debug.Log("Don't such tile");
                     break;
             }
-            return  tile;
+            return tile;
         }
 
         private TileConfig GetRandomTileConfig() => _gameResurcesLoader.CurrentTileSet[Random

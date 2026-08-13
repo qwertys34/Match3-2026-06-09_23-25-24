@@ -16,30 +16,18 @@ MonoBehaviour:
   height: 8
   interactableTilesLayout:
   - xPos: 2
-    yPos: 2
-    tileKind: 5
-  - xPos: 5
-    yPos: 5
-    tileKind: 2
-  - xPos: 3
-    yPos: 7
+    yPos: 1
     tileKind: 1
-  - xPos: 3
+  - xPos: 5
     yPos: 3
     tileKind: 1
-  - xPos: 1
-    yPos: 6
-    tileKind: 2
   - xPos: 3
-    yPos: 4
-    tileKind: 5
-  - xPos: 6
-    yPos: 6
-    tileKind: 5
+    yPos: 5
+    tileKind: 1
   levelNumber: 1
   scoreForOneStar: 100
   scoreForTwoStar: 200
-  scoreForThreeStar: 30000
-  moves: 100
-  amountStartBlank: 2
-  amountStartJelly: 2
+  scoreForThreeStar: 700
+  moves: 15
+  amountStartBlank: 3
+  amountStartJelly: 0

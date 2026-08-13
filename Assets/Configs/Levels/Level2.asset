@@ -14,8 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Levels.LevelConfig
   width: 8
   height: 8
-  interactableTilesLayout: []
+  interactableTilesLayout:
+  - xPos: 2
+    yPos: 2
+    tileKind: 1
+  - xPos: 4
+    yPos: 3
+    tileKind: 1
+  - xPos: 5
+    yPos: 6
+    tileKind: 2
   levelNumber: 2
-  levelType: 2
-  goalScore: 700
-  moves: 10
+  scoreForOneStar: 100
+  scoreForTwoStar: 300
+  scoreForThreeStar: 500
+  moves: 20
+  amountStartBlank: 2
+  amountStartJelly: 1

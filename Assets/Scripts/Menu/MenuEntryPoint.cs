@@ -1,7 +1,9 @@
+using System.Reflection;
 using Audio;
 using Data;
 using Menu.Levels;
 using Menu.UI;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace Menu
@@ -28,8 +30,11 @@ namespace Menu
 
         public async void Initialize()
         {
+            Debug.Log(_gameData.CurrentLevelIndex);
+            /*if (_gameData.CurrentLevelIndex >= _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count)
+                await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);*/
             await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);
-            _levelSequenceView.SetupButtonsView(_gameData.CurrentLevelIndex);
+            _levelSequenceView.SetupButtonsView(_gameData.CurrentLevelIndex, _setupLevelSequence.isOneLevel);
             _audioManager.PlayMenuMusic();
             _asyncSceneLoading.LoadingIsDone(true);
             await _menuView.StartAnimation();

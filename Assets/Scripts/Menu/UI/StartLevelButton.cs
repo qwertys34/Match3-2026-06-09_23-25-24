@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Data;
 using Menu.Levels;
 using TMPro;
@@ -32,20 +33,31 @@ namespace Menu.UI
             _startGame = startGame;
         }
 
-        private async void StartLevelButtonClick()
+        private void StartLevelButtonClick()
         {
-            /*if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1].LevelNumber <= 5)
+            // Запускаем асинхронную операцию и забываем (fire-and-forget)
+            StartLevelAsync().Forget();
+        }
+
+        private async UniTaskVoid StartLevelAsync()
+        {
+            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count;
+            Debug.Log("last level number: " + _setupLevelSequence.CurrentLevelSequence.LevelConfigs[length-1].LevelNumber);
+    
+            if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[length-1].LevelNumber == 5)
             {
                 await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1]);
             }
-            else 
-                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 6]);*/
-            await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 1]);
+            else if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[length - 1].LevelNumber == 10)
+                await _startGame.Start(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[Number - 6]);
+            else
+                await _startGame.StartRandomLevel(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[0]);
         }
         
-        public void SetNumber(int value) => Number = Mathf.Clamp(value, 1, 10);
+        public void SetNumber(int value) => Number = value/*Mathf.Clamp(value, 1, 10)*/;
         
         public void SetLabel() => text.text = Number.ToString();
+        public void SetLabel(string t) => text.text = t;
         
         public void SetButtonInteractable(bool value) => lable.interactable = value;
     }

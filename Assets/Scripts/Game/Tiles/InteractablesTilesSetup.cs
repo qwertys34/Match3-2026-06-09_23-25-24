@@ -11,8 +11,8 @@ namespace Game.Tiles
             tileKind = new TileKind[levelConfig.Width, levelConfig.Height];
             for (int i = 0; i < levelConfig.InteractableTilesLayout.Count; i++)
             {
-                tileKind[levelConfig.InteractableTilesLayout[i].XPos, levelConfig.InteractableTilesLayout[i].YPos] 
-                    = levelConfig.InteractableTilesLayout[i].TileKind;
+                tileKind[levelConfig.InteractableTilesLayout[i].xPos, levelConfig.InteractableTilesLayout[i].yPos] 
+                    = levelConfig.InteractableTilesLayout[i].tileKind;
             }
         }
     }

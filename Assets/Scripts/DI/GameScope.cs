@@ -19,6 +19,7 @@ namespace DI
         [SerializeField] private GameBoard gameBoard;
         [SerializeField] private EndGamePanelView endGamePanelView;
         [SerializeField] private GameProgressView gameProgressView;
+        [SerializeField] private SetupGameUI setupGameUI;
         
         protected override void Configure(IContainerBuilder builder)
         {
@@ -26,10 +27,10 @@ namespace DI
             
             builder.RegisterInstance(gameBoard);    
             builder.RegisterInstance(endGamePanelView);  
-            builder.RegisterInstance(gameProgressView);  
+            builder.RegisterInstance(gameProgressView);
+            builder.RegisterInstance(setupGameUI);
             
             builder.Register<Grid>(Lifetime.Singleton);
-            builder.Register<InteractablesTilesSetup>(Lifetime.Singleton);
             builder.Register<SetupCamera>(Lifetime.Singleton);
             builder.Register<TilePool>(Lifetime.Singleton);
             builder.Register<GameDebug>(Lifetime.Singleton);
@@ -40,6 +41,7 @@ namespace DI
             builder.Register<BackgroundTilesSetup>(Lifetime.Singleton);
             builder.Register<FXPool>(Lifetime.Singleton);
             builder.Register<GameResurcesLoader>(Lifetime.Singleton);
+            
         }
     }
 }

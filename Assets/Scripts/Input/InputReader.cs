@@ -13,6 +13,21 @@ namespace Input
         private Vector2 _startPos;
         private Vector2 _endPos;
         private const float SWIPE_THRESHOLD = 30f;
+
+        public static bool IsVectical()
+        {
+            DeviceOrientation orientation = UnityEngine.Input.deviceOrientation;
+            
+            if (orientation == DeviceOrientation.Unknown)
+            {
+                if (Screen.width > Screen.height)
+                    return false;
+                else
+                    return true;
+            }
+            
+            return orientation == DeviceOrientation.Portrait;
+        }
         
         public InputReader()
         {

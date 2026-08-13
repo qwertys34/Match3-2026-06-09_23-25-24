@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5962663094622331204}
   - component: {fileID: 7753363882827523029}
   - component: {fileID: 9026576710890293468}
-  - component: {fileID: 3931038625340264002}
   - component: {fileID: 476716473546667004}
+  - component: {fileID: 2688242478500258614}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -145,11 +145,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Audio.AudioManager
   musicSource: {fileID: 7753363882827523029}
-  pitchSoundSource: {fileID: 3931038625340264002}
+  pitchSoundSource: {fileID: 2688242478500258614}
   normalSoundSource: {fileID: 476716473546667004}
   audioMixer: {fileID: 24100000, guid: 5ef30473b0878f744a8ac6719a25d7a8, type: 2}
-  gameMusic: {fileID: 8300000, guid: 224e63c073d061f42a78dab028b63684, type: 3}
-  menuMusic: {fileID: 8300000, guid: d916e09d081bd0b42aa3eda6883a95fa, type: 3}
+  gameMusic: {fileID: 8300000, guid: 504ef5b47f14a5242a8c42f5ef8e5c6b, type: 3}
+  menuMusic: {fileID: 8300000, guid: 75bafa407832eef47a7b3cf6d6e14274, type: 3}
   click: {fileID: 8300000, guid: 2ac17fe3a64d85349812ead37c8aa3c2, type: 3}
   deselect: {fileID: 8300000, guid: 8582c3c2c0546a246b613468e0cb363f, type: 3}
   match: {fileID: 8300000, guid: f2bed7bf223fda64f9382fd4aa59cc41, type: 3}
@@ -160,7 +160,8 @@ MonoBehaviour:
   remove: {fileID: 8300000, guid: 1461240925963d949a2314065f7dffc6, type: 3}
   win: {fileID: 8300000, guid: 0ee400eee036a0b43a00983b9e1f1388, type: 3}
   loose: {fileID: 8300000, guid: 598faee821ea45442a1d25491112ad3f, type: 3}
---- !u!82 &3931038625340264002
+  explosion: {fileID: 8300000, guid: 0988346e2405d08498173bf8d5b809f2, type: 3}
+--- !u!82 &476716473546667004
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,8 +174,8 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
-  m_Pitch: 1
+  m_Volume: 1
+  m_Pitch: 0.6
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -257,7 +258,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!82 &476716473546667004
+--- !u!82 &2688242478500258614
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -269,9 +270,9 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 0.6
+  m_PlayOnAwake: 1
+  m_Volume: 0.6
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0

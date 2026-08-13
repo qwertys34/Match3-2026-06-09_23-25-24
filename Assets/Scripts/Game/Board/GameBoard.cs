@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Animations;
+using Cysharp.Threading.Tasks;
 using Game.MatchTiles;
 using Game.Tiles;
 using UnityEngine;
@@ -11,7 +13,6 @@ namespace Game.Board
     public class GameBoard : MonoBehaviour
     {
         private readonly List<Tile> _tilesToRefill = new();
-        
         
         private Grid _grid;
         private TilePool _tilePool;
@@ -28,94 +29,155 @@ namespace Game.Board
             this.interactablesTilesSetup = interactablesTilesSetup;
             _matchFinder = matchFinder;
         }
-        
 
-        private void RevealTiles()
+        public async UniTask CreateBoard()
         {
-            foreach (var tile in _tilesToRefill)
-            {
-                var objTile = tile.gameObject;
-                _animation.Reveal(objTile, 1f);
-            }
-        }
-
-        public void CreateBoard()
-        {
-            FillBoard();
-            while (_matchFinder.CheckBoardForMatches(_grid))
+            //int maxIterations = 1000;
+            int iteration = 0;
+            
+            // Фаза 1: Быстрая генерация без анимаций
+            do
             {
                 ClearBoard();
-                FillBoard();
-                Debug.Log("Created board");
-            }
+                FillBoardSync();
+                
+                // Даём кадр движку каждые 100 итераций
+                if (++iteration % 100 == 0)
+                    await UniTask.Yield(PlayerLoopTiming.Update);
+                    
+            } while (_matchFinder.CheckBoardForMatches(_grid) /*&& iteration < maxIterations*/);
+            
             _matchFinder.ClearAnyTilesToRemove();
-            RevealTiles();
+            
+            // Фаза 2: Красивая анимация появления тайлов
+            await RevealTilesAsync();
         }
 
         private void ClearBoard()
         {
             if (_tilesToRefill == null) return;
+            
             foreach (var tile in _tilesToRefill)
             {
-                _grid.SetValue(tile.transform.position, null); // уничтожаю тайлы 
+                if (tile == null) continue;
+                _grid.SetValue(tile.transform.position, null);
                 tile.gameObject.SetActive(false);
             }
+            
             _tilesToRefill.Clear();
         }
-
-        private void FillBoard()
+        
+        private void FillBoardSync()
         {
             for (int x = 0; x < _grid.Width; x++)
             {
                 for (int y = 0; y < _grid.Height; y++)
                 {
                     var tileKind = interactablesTilesSetup.tileKind[x, y];
+                    var worldPos = _grid.GridToWorld(x, y);
+                    
                     switch (tileKind)
                     {
                         case TileKind.Blank:
-                            if (_grid.GetValue(x, y)) continue; 
-                            var blankTile = _tilePool.CreateTile<BlankTile>(_grid.GridToWorld(x, y), transform);
+                            if (_grid.GetValue(x, y)) continue;
+                            var blankTile = _tilePool.GetTile<BlankTile>(worldPos, transform);
                             _grid.SetValue(x, y, blankTile);
-                            _animation.Reveal(blankTile.gameObject, 1f);
+                            _tilesToRefill.Add(blankTile);
                             break;
+                            
                         case TileKind.RocketVertical:
-                            var vertivalRocketTile = _tilePool.CreateTile<VerticalRocketTile>(_grid.GridToWorld(x, y), transform);
-                            _grid.SetValue(x, y, vertivalRocketTile);
-                            _animation.Reveal(vertivalRocketTile.gameObject, 1f);
-                            _tilesToRefill.Add(vertivalRocketTile); // нужно добавлять в рефил,
-                                                            // чтоб удалялись объекты, которые могу заметчиться
+                            var verticalRocketTile = _tilePool.GetTile<VerticalRocketTile>(worldPos, transform);
+                            _grid.SetValue(x, y, verticalRocketTile);
+                            _tilesToRefill.Add(verticalRocketTile);
                             break;
+                            
                         case TileKind.RocketHorizontal:
-                            var horizontalRocketTile = _tilePool.CreateTile<HorizontalRocketTile>(_grid.GridToWorld(x, y), transform);
+                            var horizontalRocketTile = _tilePool.GetTile<HorizontalRocketTile>(worldPos, transform);
                             _grid.SetValue(x, y, horizontalRocketTile);
-                            _animation.Reveal(horizontalRocketTile.gameObject, 1f);
-                            _tilesToRefill.Add(horizontalRocketTile); // нужно добавлять в рефил,
-                                                            // чтоб удалялись объекты, которые могу заметчиться
+                            _tilesToRefill.Add(horizontalRocketTile);
                             break;
+                            
                         case TileKind.Jelly:
-            // У jelly-тайла конфиг обычного тайла, а поле tileKind = TileKind.Jelly                
-                            var jellyTile = _tilePool.CreateTile<JellyTile>(_grid.GridToWorld(x, y), transform);
+                            var jellyTile = _tilePool.GetTile<JellyTile>(worldPos, transform);
+                            if (jellyTile == null)
+                            {
+                                Debug.LogError("Jelly tile is null");
+                                continue;
+                            }
                             _grid.SetValue(x, y, jellyTile);
-                            _animation.Reveal(jellyTile.gameObject, 1f);
-                            _animation.Reveal(jellyTile.JellyTransform.gameObject, 1f);
                             _tilesToRefill.Add(jellyTile);
                             break;
+                            
                         case TileKind.Bomb:
-                            var bombTile = _tilePool.CreateTile<BombTile>(_grid.GridToWorld(x, y), transform);
+                            var bombTile = _tilePool.GetTile<BombTile>(worldPos, transform);
                             _grid.SetValue(x, y, bombTile);
-                            _animation.Reveal(bombTile.gameObject, 1f);
-                            _tilesToRefill.Add(bombTile); // нужно добавлять в рефил,
-                            // чтоб удалялись объекты, которые могу заметчиться
+                            _tilesToRefill.Add(bombTile);
                             break;
+                            
+                        case TileKind.SuperCandy:
+                            var superCandyTile = _tilePool.GetTile<SuperCandyTile>(worldPos, transform);
+                            _grid.SetValue(x, y, superCandyTile);
+                            _tilesToRefill.Add(superCandyTile);
+                            break;
+                            
                         case TileKind.Normal:
-                            var tile = _tilePool.GetTile(_grid.GridToWorld(x, y), transform);
+                            var tile = _tilePool.GetTile<Tile>(worldPos, transform);
                             _grid.SetValue(x, y, tile);
-                            tile.gameObject.SetActive(true);
                             _tilesToRefill.Add(tile);
+                            break;
+                            
+                        default:
+                            Debug.LogWarning($"Unknown tile kind: {tileKind}");
                             break;
                     }
                 }
-            }   
+            }
+        }
+
+        private async UniTask RevealTilesAsync()
+        {
+            for (int i = 0; i < _tilesToRefill.Count; i++)
+            {
+                var tile = _tilesToRefill[i];
+                if (tile == null) continue;
+                
+                tile.gameObject.SetActive(true);
+                
+                switch (tile.tileKind)
+                {
+                    case TileKind.Blank:
+                        _ = _animation.Reveal(tile.gameObject, 1f);
+                        break;
+                        
+                    case TileKind.RocketVertical:
+                    case TileKind.RocketHorizontal:
+                    case TileKind.Bomb:
+                    case TileKind.SuperCandy:
+                        _ = _animation.Reveal(tile.gameObject, 1f);
+                        break;
+                        
+                    case TileKind.Jelly:
+                        var jellyTile = tile as JellyTile;
+                        if (jellyTile != null)
+                        {
+                            _ = _animation.Reveal(tile.gameObject, 1f);
+                            _ = _animation.Reveal(jellyTile.JellyTransform.gameObject, 1f);
+                        }
+                        break;
+                        
+                    case TileKind.Normal:
+                        _ = _animation.Reveal(tile.gameObject, 1f);
+                        // Обычные тайлы просто появляются без анимации
+                        break;
+                }
+                
+                // Задержка для эффекта "волны" (каждые 5 тайлов или каждый тайл)
+                if (i % 3 == 0)
+                    await UniTask.Delay(TimeSpan.FromMilliseconds(15));
+            }
+            
+            // Даём последний кадр для завершения анимаций
+            await UniTask.Delay(TimeSpan.FromMilliseconds(50));
         }
     }
 }

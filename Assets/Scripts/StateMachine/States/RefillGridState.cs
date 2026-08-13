@@ -25,7 +25,7 @@ namespace StateMachine.States
         private GameProgress _gameProgress;
         private AudioManager _audioManager;
 
-        private List<Vector2Int> _tilesToRefillPos = new List<Vector2Int>(); 
+        private List<Vector2Int> _tilesToRefillPos = new(); 
         
         public RefillGridState(IStateSwitcher switcher, Grid grid, IAnimation animation, MatchFinder matchFinder,
             TilePool tilePool, Transform parent,  GameProgress gameProgress, AudioManager audioManager)
@@ -44,6 +44,7 @@ namespace StateMachine.States
 
         public async void Enter()
         {
+            Debug.Log("пошло дело");//
             await TileFall();
             await RefillTiles();
             if (_matchFinder.CheckBoardForMatches(_grid))
@@ -95,7 +96,8 @@ namespace StateMachine.States
                 for (int y = 0; y < _grid.Height; y++)
                 {
                     if (_grid.GetValue(x, y) != null) continue;
-                    var tile = _tilePool.GetTile(_grid.GridToWorld(x,y), _parent);
+                    var tile = _tilePool.GetTile<Tile>(_grid.GridToWorld(x,y), _parent)
+                        .GetComponent<Tile>();
                     _grid.SetValue(x, y, tile);
                     tile.gameObject.SetActive(true);
                     _ = _animation.Reveal(tile.gameObject, 0.1f);

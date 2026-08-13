@@ -58,13 +58,13 @@ namespace StateMachine.States
             foreach (var rocketTile in verticalRocketTilesToRemove)
             {
                 await ((VerticalRocketTile)rocketTile).Run(_grid, _animation, _scoreCalculator, _fxPool, _matchFinder,
-                    _gameBoard, _audioManager, _gameResurcesLoader);
+                    _gameBoard, _audioManager, _gameResurcesLoader, horizontalRocketTilesToRemove);
             }
             
             foreach (var rocketTile in horizontalRocketTilesToRemove)
             {
                 await ((HorizontalRocketTile)rocketTile).Run(_grid, _animation, _scoreCalculator, _fxPool, _matchFinder,
-                    _gameBoard, _audioManager, _gameResurcesLoader);
+                    _gameBoard, _audioManager, _gameResurcesLoader, verticalRocketTilesToRemove);
             }
             
             foreach (var tile in tilesToRemove)
@@ -100,7 +100,7 @@ namespace StateMachine.States
             }
             foreach (var blankTile in blankTilesToRemove)
             {
-                await _animation.ShakeAnimate(blankTile.transform, 0.1f, Ease.InQuint);//111
+                await _animation.ShakeAnimate(blankTile.transform, 0.1f, Ease.InQuint);
                 blankTile.ChangeState(_gameResurcesLoader);
                 if (blankTile.CanAlive()) continue;
                 

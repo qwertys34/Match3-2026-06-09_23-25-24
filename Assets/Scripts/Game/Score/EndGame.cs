@@ -36,5 +36,6 @@ namespace Game.Score
             await sceneLoading.LoadAsync(Scenes.MENU);
             _audioManager.PlayMenuMusic();
         }
+        
     }
 }
