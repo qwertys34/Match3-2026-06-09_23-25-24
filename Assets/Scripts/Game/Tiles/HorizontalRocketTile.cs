@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using Animations;
 using Audio;
 using Cysharp.Threading.Tasks;
@@ -15,33 +17,35 @@ namespace Game.Tiles
 {
     public class HorizontalRocketTile : Tile
     {
+        public CancellationTokenSource shakeCts { get; set; }
+
         public async UniTask Run(Grid grid, IAnimation animation, ScoreCalculator scoreCalculator,
             FXPool fxPool, MatchFinder matchFinder, GameBoard gameBoard, AudioManager audioManager,
-            GameResurcesLoader gameResurcesLoader, List<Tile> verticalRocketTilesToRemove)
+            GameResurcesLoader gameResurcesLoader)
         {
             var tilePos = grid.WorldToGrid(transform.position);
             
             // Убираем текущий тайл с его позиции
             grid.SetValue(tilePos.x, tilePos.y, null);
             
-            // Создаем два снаряда: один летит вверх, другой вниз
-            var upProjectile = CreateProjectile();
-            var downProjectile = CreateProjectile();
+            // Создаем два снаряда: один летит вправо, другой влево
+            var rightProjectile = CreateProjectile();
+            var leftProjectile = CreateProjectile();
             
             // Устанавливаем начальные позиции
-            upProjectile.transform.position = transform.position;
-            downProjectile.transform.position = transform.position;
+            rightProjectile.transform.position = transform.position;
+            leftProjectile.transform.position = transform.position;
             
             // Сначала скрываем оригинальный тайл
             await animation.HideTile(gameObject);
             
-            // Запускаем движение вверх и вниз параллельно
-            var upTask = MoveProjectile(upProjectile, grid, animation, scoreCalculator, fxPool, 
-                audioManager, gameBoard, gameResurcesLoader, tilePos, 1, verticalRocketTilesToRemove); // +1 для движения вверх
-            var downTask = MoveProjectile(downProjectile, grid, animation, scoreCalculator, fxPool, 
-                audioManager, gameBoard, gameResurcesLoader, tilePos, -1, verticalRocketTilesToRemove); // -1 для движения вниз
+            // Запускаем движение вправо и влево параллельно
+            var rightTask = MoveProjectile(rightProjectile, grid, animation, scoreCalculator, fxPool, 
+                audioManager, gameBoard, gameResurcesLoader, tilePos, 1, matchFinder); // +1 для движения вправо
+            var leftTask = MoveProjectile(leftProjectile, grid, animation, scoreCalculator, fxPool, 
+                audioManager, gameBoard, gameResurcesLoader, tilePos, -1, matchFinder); // -1 для движения влево
             
-            await UniTask.WhenAll(upTask, downTask);
+            await UniTask.WhenAll(rightTask, leftTask);
             
             // Уничтожаем оригинальный тайл только после завершения всех операций
             if (this != null && gameObject != null)
@@ -58,14 +62,14 @@ namespace Game.Tiles
             
             // Копируем спрайт
             var spriteRenderer = projectile.AddComponent<SpriteRenderer>();
-            /*var originalRenderer = GetComponent<SpriteRenderer>();
+            var originalRenderer = GetComponent<SpriteRenderer>();
             if (originalRenderer != null)
             {
                 spriteRenderer.sprite = originalRenderer.sprite;
                 spriteRenderer.sortingOrder = originalRenderer.sortingOrder;
                 spriteRenderer.sortingLayerID = originalRenderer.sortingLayerID;
                 spriteRenderer.sortingLayerName = originalRenderer.sortingLayerName;
-            }*/
+            }
             
             // Копируем масштаб
             projectile.transform.localScale = transform.localScale;
@@ -76,9 +80,11 @@ namespace Game.Tiles
         private async UniTask MoveProjectile(GameObject projectile, Grid grid, IAnimation animation, 
             ScoreCalculator scoreCalculator, FXPool fxPool, AudioManager audioManager, 
             GameBoard gameBoard, GameResurcesLoader gameResurcesLoader, 
-            Vector2Int startPos, int direction, List<Tile> verticalRocketTile)
+            Vector2Int startPos, int direction, MatchFinder matchFinder)
         {
             var currentPos = startPos;
+            List<VerticalRocketTile> activatedRockets = new(); 
+            List<BombTile> activatedBomb = new(); 
             
             for (int i = 0; i < grid.Width; i++)
             {
@@ -100,7 +106,6 @@ namespace Game.Tiles
                     continue;
                 }
                 
-                // Если это BlankTile
                 if (nextTileValue.tileKind == TileKind.Blank)
                 {
                     var blankTile = (BlankTile)nextTileValue;
@@ -140,7 +145,8 @@ namespace Game.Tiles
                     
                     // Ломаем JellyTile на одно состояние
                     jellyTile.ChangeState(jellyTile.JellyTransform, gameResurcesLoader);
-                    await animation.ShakeAnimate(jellyTile.transform, 0.1f, Ease.InQuint); // ?
+                    await animation.ShakeAnimate(jellyTile.transform, 0.1f, Ease.InQuint);
+                    
                     // Эффекты и очки за разрушение состояния JellyTile
                     audioManager.PlayRemove();
                     var amountScore = scoreCalculator.AddScoreForInteractabel(TileKind.Jelly);
@@ -169,16 +175,58 @@ namespace Game.Tiles
                         await animation.HideTile(projectile);
                         return;
                     }
-                    
                 }
-                /*else if (nextTileValue.tileKind == TileKind.RocketHorizontal)
-                    verticalRocketTile.Remove(nextTileValue);*/
+                else if (nextTileValue.tileKind == TileKind.RocketHorizontal)
+                {
+                    audioManager.PlayRemove();
+                    await animation.HideTile(nextTileValue.gameObject);
+                    var amountScore = scoreCalculator.AddScoreForInteractabel(TileKind.RocketHorizontal);
+                    fxPool.GetFX(nextTileValue.transform.position, gameBoard.transform, amountScore);
+                    
+                    grid.SetValue(nextTile.x, nextTile.y, null);
+                    await animation.MoveObject(projectile, grid.GridToWorld(nextTile.x, nextTile.y),
+                        0.1f, Ease.InQuart);
+                    currentPos.x += direction;
+                    continue;
+                }
+                else if (nextTileValue.tileKind == TileKind.RocketVertical)
+                {
+                    var verticalRocket = (VerticalRocketTile)nextTileValue;
+                    
+                    // Добавляем в список активированных
+                    activatedRockets.Add(verticalRocket);
+                    
+                    // Запускаем анимацию тряски (не ждем завершения)
+                    var shakeCts = new CancellationTokenSource();
+                    _ = animation.ShakeAnimateUntil(verticalRocket.transform, Ease.InQuint, shakeCts);
+                    
+                    verticalRocket.shakeCts = shakeCts;
+                    
+                    currentPos.x += direction;
+                    continue;
+                }
+                // Бомба - пропускаем
+                else if (nextTileValue.tileKind == TileKind.Bomb)
+                {
+                    var bomb = (BombTile)nextTileValue;
+                    
+                    activatedBomb.Add(bomb);
+                    
+                    var shakeCts = new CancellationTokenSource();
+                    _ = animation.ShakeAnimateUntil(bomb.transform, Ease.InQuint, shakeCts);
+                    
+                    bomb.shakeCts = shakeCts;
+                    
+                    currentPos.x += direction;
+                    continue;
+                }
+                
                 // Обычный тайл - уничтожаем его и двигаем снаряд на его место
                 audioManager.PlayRemove();
                 if (nextTileValue != null)
                 {
                     await animation.HideTile(nextTileValue.gameObject);
-                    var amountScore = scoreCalculator.AddScoreForInteractabel(TileKind.RocketVertical);
+                    var amountScore = scoreCalculator.AddScoreForInteractabel(TileKind.RocketHorizontal);
                     fxPool.GetFX(nextTileValue.transform.position, gameBoard.transform, amountScore);
                 }
                 
@@ -190,10 +238,41 @@ namespace Game.Tiles
                 currentPos.x += direction;
             }
             
-            // Уничтожаем снаряд в конце пути, так как он не должен оставаться на поле
+            // Уничтожаем снаряд в конце пути
             if (projectile != null && projectile.TryGetComponent(out SpriteRenderer sr))
             {
                 await animation.HideTile(projectile);
+            }
+            
+            // В конце полета запускаем все активированные вертикальные ракеты
+            foreach (var rocket in activatedRockets)
+            {
+                if (rocket == null || rocket.gameObject == null) continue;
+                
+                // Останавливаем тряску
+                rocket.shakeCts?.Cancel();
+                rocket.shakeCts?.Dispose();
+                
+                // Убираем ракету с сетки перед запуском
+                var rocketPos = grid.WorldToGrid(rocket.transform.position);
+                grid.SetValue(rocketPos.x, rocketPos.y, null);
+                
+                // Запускаем ракету
+                await rocket.Run(grid, animation, scoreCalculator, fxPool,
+                    matchFinder, gameBoard, audioManager, gameResurcesLoader);
+            }
+            
+            foreach (var bomb in activatedBomb)
+            {
+                if (bomb == null || bomb.gameObject == null) continue;
+                
+                // Останавливаем тряску
+                bomb.shakeCts?.Cancel();
+                bomb.shakeCts?.Dispose();
+                
+                // Запускаем ракету
+                await bomb.Explode(grid, gameResurcesLoader, animation, scoreCalculator, fxPool, gameBoard,
+                    audioManager, matchFinder);
             }
         }
     }

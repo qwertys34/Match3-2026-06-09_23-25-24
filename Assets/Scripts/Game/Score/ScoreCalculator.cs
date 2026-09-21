@@ -53,9 +53,11 @@ namespace Game.Score
         {
             switch (tileKind)
             {
+                case TileKind.Normal:
                 case TileKind.Blank:
                 case  TileKind.Jelly:
-                case TileKind.RocketVertical:    
+                case TileKind.RocketVertical:   
+                case TileKind.RocketHorizontal:    
                     _gameProgress.AddScore(50);
                     return 50;
             }

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Animations;
@@ -21,23 +19,22 @@ namespace Menu.UI
 
         private AnimationManager _animation;
         private CancellationTokenSource _cts;
-        private bool current;
-        private bool newOrientation;
+        private bool _currentOrientation;
         
         [Inject] private void Configure(AnimationManager animationManager) => 
             _animation = animationManager;
 
         public async UniTask StartAnimation()
         {
+            // Отменяем предыдущую анимацию, если она еще идет
+            _cts?.Cancel();
+            _cts?.Dispose();
             _cts = new CancellationTokenSource();
             
-            current = InputReader.IsVectical();
-            if (current)
-                _animation.MoveUI(logo, new Vector3(0, -481.7f, 0), 0.6f, Ease.OutBounce);
-            else 
-                _animation.MoveUI(logo, new Vector3(0, -392.8f, 0), 0.6f, Ease.OutBounce);
+            _currentOrientation = InputReader.IsVectical();
             
-            await UniTask.Delay(TimeSpan.FromSeconds(0.6f), _cts.IsCancellationRequested);
+            float logoYPosition = _currentOrientation ? -481.7f : -392.8f;
+            _animation.MoveUI(logo, new Vector3(0, logoYPosition, 0), 0.6f, Ease.OutBounce);
             
             bool isLandscape = Screen.width > Screen.height;
             Vector3 targetScale = isLandscape ? Vector3.one : Vector3.one * 0.86f;
@@ -46,19 +43,20 @@ namespace Menu.UI
             {
                 await _animation.RevealUI(button, 0.2f, targetScale);
             }
-            
-            _cts.Cancel();
         }
 
         private void Update()
         {
-            newOrientation = InputReader.IsVectical();
-            if (current != newOrientation)
+            bool newOrientation = InputReader.IsVectical();
+            if (_currentOrientation != newOrientation)
             {
-                current = newOrientation;
-                var newPos = Vector3.zero;
-                newPos.y = newOrientation ? -478f : -392.8f; 
-                logo.anchoredPosition = newPos;
+                _currentOrientation = newOrientation;
+                
+                // Используем константы
+                float newY = newOrientation ? -478f : -392.8f;
+                
+                // Плавно перемещаем или сразу устанавливаем позицию
+                logo.anchoredPosition = new Vector2(logo.anchoredPosition.x, newY);
             }
         }
 

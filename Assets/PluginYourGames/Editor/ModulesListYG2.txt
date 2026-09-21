@@ -1,0 +1,6 @@
+AutoTranslateLangs v1.003
+BannerAdv v1.0
+Fullscreen v1.0
+InterstitialAdv v1.02
+Localization v1.02
+StickyAdv v1.0

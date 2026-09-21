@@ -36,7 +36,7 @@ namespace StateMachine.States
 
         public async void Enter()
         {
-            try
+            //try
             {
                 _cts = new CancellationTokenSource();
                 _audioManager.PlayWhoosh();
@@ -57,16 +57,19 @@ namespace StateMachine.States
                 }
                 _cts.Cancel();
             }
-            catch (Exception e)
+            /*catch (Exception e)
             {
                 throw new Exception(e.Message);
-            }
+            }*/
         }
 
         private async UniTask SwapTiles(Vector2Int current, Vector2Int target)
         {
             var currentTile = _grid.GetValue(current.x, current.y);
             var targetTile = _grid.GetValue(target.x, target.y);
+
+            if (currentTile == null || targetTile == null)
+                return;
             
             AnimateTile(currentTile, target, true, out var tileSrOne, out var modefireSrOne);
             AnimateTile(targetTile, current, false, out var tileSrTwo, out var modefireSrTwo);

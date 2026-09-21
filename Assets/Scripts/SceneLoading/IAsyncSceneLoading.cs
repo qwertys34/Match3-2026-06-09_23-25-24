@@ -7,6 +7,7 @@ public interface IAsyncSceneLoading
     UniTask LoadAsync(string  sceneName);
     UniTask RestartScene();
     UniTask UnloadAsync(string  sceneName);
+    UniTask LoadNewNextScene(AudioManager audioManager, SetupLevelSequence _setupLevelSequence);
     UniTask LoadNextScene(AudioManager audioManager, SetupLevelSequence _setupLevelSequence);
     bool IsLastLevel(SetupLevelSequence _setupLevelSequence);
     void LoadingIsDone(bool value);

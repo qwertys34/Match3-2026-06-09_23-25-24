@@ -13,7 +13,6 @@ namespace StateMachine.States
         private readonly Vector2Int _emptyPosition = Vector2Int.one * -1;
         private readonly IStateSwitcher _stateSwitcher;
         private readonly Grid _grid;
-        private readonly Camera _camera;
         private readonly InputReader _inputReader;
         private readonly IAnimation _animation;
         private AudioManager _audioManager;
@@ -24,7 +23,6 @@ namespace StateMachine.States
             _animation = animation;
             _grid = grid;
             _audioManager = audioManager;
-            _camera = Camera.main;
             _inputReader = new InputReader();
             
             _inputReader.Click += OnTileClick; 
@@ -33,15 +31,20 @@ namespace StateMachine.States
         
         public void Enter()
         {
-            _inputReader.EnableInput(true);
+            _inputReader.EnablePlayerInput(true);
             DeselectTile();
         }
 
         private void OnSwiped(Vector2 startPos, Vector2 endPos) 
         {
             DeselectTile();
-            var startGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(startPos));
-            var endGridPos = _grid.WorldToGrid(_camera.ScreenToWorldPoint(endPos));
+            var camera = Camera.main;
+            var startGridPos = _grid.WorldToGrid(camera.ScreenToWorldPoint(startPos));
+            var endGridPos = _grid.WorldToGrid(camera.ScreenToWorldPoint(endPos));
+
+            var dir = new Vector2(endGridPos.x - startGridPos.x, endGridPos.y - startGridPos.y).normalized;
+            var dirInt = new Vector2Int((int)dir.x, (int)dir.y);
+            var newPos = startGridPos + dirInt;
             
             if (!IsValidPosition(startGridPos) || !IsValidPosition(endGridPos))
                 return;
@@ -49,23 +52,23 @@ namespace StateMachine.States
             if (IsBlankPosition(startGridPos) || IsBlankPosition(endGridPos))
                 return;
             
-            if (IsSwappable(startGridPos, endGridPos))
+            if (IsSwappable(startGridPos, newPos))
             {
                 if (_grid.GetValue(startGridPos.x, startGridPos.y).TileConfig.TileKind == TileKind.Normal &&
-                    _grid.GetValue(endGridPos.x, endGridPos.y).TileConfig.TileKind == TileKind.SuperCandy)
+                    _grid.GetValue(newPos.x, newPos.y).TileConfig.TileKind == TileKind.SuperCandy)
                 {
                     _audioManager.PlayClick();
                     _grid.SetCurrentPosition(startGridPos);
-                    _grid.SetTargetPosition(endGridPos);
-                    _animation.AnimateTile(_grid.GetValue(endGridPos.x, endGridPos.y), 1f);
+                    _grid.SetTargetPosition(newPos);
+                    _animation.AnimateTile(_grid.GetValue(newPos.x, newPos.y), 1f);
                     _stateSwitcher.SwitchState<MergeTilesState>();
                 }
                 else
                 {
                     _audioManager.PlayClick();
                     _grid.SetCurrentPosition(startGridPos);
-                    _grid.SetTargetPosition(endGridPos);
-                    _animation.AnimateTile(_grid.GetValue(endGridPos.x, endGridPos.y), 1f);
+                    _grid.SetTargetPosition(newPos);
+                    _animation.AnimateTile(_grid.GetValue(newPos.x, newPos.y), 1f);
                     _stateSwitcher.SwitchState<SwapTilesState>();
                 }
                 
@@ -79,8 +82,9 @@ namespace StateMachine.States
 
         private void OnTileClick()
         {
+            var camera = Camera.main;
             var clickPosition = _grid.WorldToGrid(
-                _camera.ScreenToWorldPoint(_inputReader.GetPosition()));
+                camera.ScreenToWorldPoint(_inputReader.GetPosition()));
 
             if (!IsValidPosition(clickPosition) || IsBlankPosition(clickPosition))
             {
@@ -153,6 +157,6 @@ namespace StateMachine.States
             gridPos.x >= 0 && gridPos.x < _grid.Width 
             && gridPos.y >= 0 && gridPos.y < _grid.Height;
 
-        public void Exit() => _inputReader.EnableInput(false);
+        public void Exit() => _inputReader.EnablePlayerInput(false);
     }
 }

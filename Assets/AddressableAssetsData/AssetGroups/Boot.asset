@@ -40,11 +40,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6a10696d9e19d3c47a788cfa9267668d
-    m_Address: Whoosh
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8582c3c2c0546a246b613468e0cb363f
     m_Address: Deselect
     m_ReadOnly: 0

@@ -1,17 +1,20 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Game.Tiles;
+using Input;
 using Levels;
+using UnityEngine;
 
 namespace Game.Score
 {
-    public class GameProgress
+    public class GameProgress : IDisposable
     {
+        public event Action OnGamePause;
         public event Func<UniTask> OnNewGoalToStar;
         public event Action OnMove;
         public event Func<TileKind, UniTask> AmountTilesChanged;
         public bool IsWin { get; private set; } = false;
-        
+        public bool IsPause { get; private set; }
         public int Score { get; private set; }
         public int GoalAmountScore { get; private set; }
         public int CurrentAmountStars { get; private set; }
@@ -22,6 +25,15 @@ namespace Game.Score
         public int Moves { get; private set; }
         public int CurrentAmountBlank { get; private set; }
         public int CurrentAmountJelly { get; private set; }
+
+        private InputReader _inputReader;
+        
+        public GameProgress(InputReader inputReader)
+        {
+            this._inputReader = inputReader;
+            this._inputReader.Pause += GamePause;
+            this._inputReader.UIClick += GamePauseWithMouse;
+        }
         
         public void LoadLevelConfig(LevelConfig levelConfig)
         {
@@ -78,6 +90,24 @@ namespace Game.Score
             OnMove?.Invoke();
         }
 
+        private void GamePause()
+        {
+            IsPause = !IsPause;
+            OnGamePause?.Invoke();
+        }
+
+        private void GamePauseWithMouse()
+        {
+            if (IsPause)
+            {
+                IsPause = false;
+                OnGamePause?.Invoke();
+                Debug.Log("все норм");
+            }
+        }
+        
+        public void OnGamePauseWithMouse() => IsPause = !IsPause;
+        
         private bool CheckScoreForStar()
         {
             if (Score >= GoalAmountScore && GoalAmountScore == ScoreForOneStar)
@@ -99,6 +129,12 @@ namespace Game.Score
             }
 
             return false;
+        }
+
+        public void Dispose()
+        {
+            _inputReader.Pause -= GamePause;
+            _inputReader.UIClick -= GamePauseWithMouse;
         }
     }
 }

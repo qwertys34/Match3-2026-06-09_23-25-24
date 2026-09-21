@@ -1,4 +1,5 @@
 using System.Reflection;
+using YG;
 using Audio;
 using Data;
 using Menu.Levels;
@@ -31,13 +32,20 @@ namespace Menu
         public async void Initialize()
         {
             Debug.Log(_gameData.CurrentLevelIndex);
-            /*if (_gameData.CurrentLevelIndex >= _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count)
-                await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);*/
+
+            /*#region Test
+            var type = _gameData.GetType();
+            type.GetProperty("CurrentLevelIndex", BindingFlags.Instance | BindingFlags.Public)
+                ?.SetValue(_gameData, 5);
+            
+            #endregion*/
+            
             await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);
             _levelSequenceView.SetupButtonsView(_gameData.CurrentLevelIndex, _setupLevelSequence.isOneLevel);
             _audioManager.PlayMenuMusic();
             _asyncSceneLoading.LoadingIsDone(true);
             await _menuView.StartAnimation();
+            YG2.GameReadyAPI();
         }
     }
 }

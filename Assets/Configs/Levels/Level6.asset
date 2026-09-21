@@ -24,8 +24,8 @@ MonoBehaviour:
   - xPos: 2
     yPos: 4
     tileKind: 1
-  - xPos: 1
-    yPos: 6
+  - xPos: 2
+    yPos: 5
     tileKind: 6
   - xPos: 3
     yPos: 2
@@ -51,7 +51,7 @@ MonoBehaviour:
   - xPos: 4
     yPos: 5
     tileKind: 1
-  - xPos: 6
+  - xPos: 5
     yPos: 2
     tileKind: 6
   - xPos: 5
@@ -64,7 +64,7 @@ MonoBehaviour:
     yPos: 5
     tileKind: 5
   levelNumber: 6
-  scoreForOneStar: 500
+  scoreForOneStar: 1000
   scoreForTwoStar: 1500
   scoreForThreeStar: 1900
   moves: 30

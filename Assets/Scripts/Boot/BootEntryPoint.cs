@@ -3,6 +3,7 @@ using Save;
 using SceneLoading;
 using UnityEngine;
 using VContainer.Unity;
+using YG;
 
 namespace Boot
 {
@@ -20,6 +21,7 @@ namespace Boot
 
         public async void Initialize()
         {
+            YG2.StickyAdActivity(true);
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             //_saveProgress.ResetProgress(); 

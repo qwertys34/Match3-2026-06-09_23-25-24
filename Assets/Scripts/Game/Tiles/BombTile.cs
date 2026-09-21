@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Animations;
 using Audio;
 using Cysharp.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Game.Tiles
         private Sequence _bombSequence;
         private List<Sequence> _explodeSequences = new(); 
         private bool _isExploded = false;
+        public CancellationTokenSource shakeCts { get; set; }
         
         public async UniTask Explode(Grid grid, GameResurcesLoader resurcesLoader,
             IAnimation animation, ScoreCalculator scoreCalculator, FXPool fxPool,

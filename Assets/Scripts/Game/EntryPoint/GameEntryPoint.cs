@@ -1,4 +1,3 @@
-using System;
 using Animations;
 using Audio;
 using Data;
@@ -13,8 +12,6 @@ using Levels;
 using ResurcesLoading;
 using Grid = Game.GridSystem.Grid;
 using IInitializable = VContainer.Unity.IInitializable;
-using System.Reflection;
-using Menu.UI;
 using UnityEngine;
 
 namespace Game.EntryPoint
@@ -61,18 +58,6 @@ namespace Game.EntryPoint
                 _gameProgress, _scoreCalculator, _audioManager, _endGamePanelView, _backgroundTilesSetup, _fxPool,
                 _resurcesLoader);
             _sceneLoading.LoadingIsDone(true);
-            
-            // test
-            //var gameProgressType = _gameProgress.GetType();
-            /*gameProgressType.GetProperty("CurrentAmountBlank", BindingFlags.Instance | BindingFlags.Public)
-                ?.SetValue(_gameProgress, 0);
-            gameProgressType.GetProperty("CurrentAmountJelly", BindingFlags.Instance | BindingFlags.Public)
-                ?.SetValue(_gameProgress, 0);*/
-            /*var test = gameProgressType.GetProperties();
-            foreach (var t in test)
-            {
-                Debug.Log(t);
-            }*/
         }
 
         public GameEntryPoint(ScoreCalculator scoreCalculator, InteractablesTilesSetup interactablesTilesSetup,

@@ -15,10 +15,10 @@ namespace Levels
         
         [Header("Level")]
         [SerializeField] private int levelNumber;
-        [SerializeField] private int scoreForOneStar;
-        [SerializeField] private int scoreForTwoStar;
-        [SerializeField] private int scoreForThreeStar;
-        [SerializeField] private int moves;
+        public int scoreForOneStar;
+        public int scoreForTwoStar;
+        public int scoreForThreeStar;
+        public int moves;
         public int amountStartBlank;
         public int amountStartJelly;
 

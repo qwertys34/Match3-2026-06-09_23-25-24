@@ -9,6 +9,7 @@ using Menu.Levels;
 using Save;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
 
@@ -16,7 +17,13 @@ namespace SceneLoading
 {
     public class AsyncSceneLoading : IAsyncSceneLoading, IDisposable
     {
-        private Dictionary<string, SceneInstance> _loadedScenes = new();
+        private class LoadedSceneInfo
+        {
+            public SceneInstance SceneInstance;
+            public AsyncOperationHandle<SceneInstance> Handle;
+        }
+        
+        private Dictionary<string, LoadedSceneInfo> _loadedScenes = new();
         private LoadingView loadingScreen;
         private CancellationTokenSource cts;
         private GameData _gameData;
@@ -34,24 +41,63 @@ namespace SceneLoading
 
         public async UniTask LoadAsync(string sceneName)
         {
-            cts = new CancellationTokenSource();
-            LoadingIsDone(false);
-            await UniTask.Delay(TimeSpan.FromSeconds(2), cts.IsCancellationRequested);
-           var loadedScene = await Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive)
-                .WithCancellation(cts.Token);
-            SceneManager.SetActiveScene(loadedScene.Scene);
-            _loadedScenes.TryAdd(sceneName, loadedScene);
-            _audioManager.PlayGameMusic();
-            cts.Cancel();
+            try
+            {
+                LoadingIsDone(false);
+                await UniTask.Delay(TimeSpan.FromSeconds(2));
+                
+                var handle = Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+                var loadedScene = await handle;
+                
+                if (loadedScene.Scene.IsValid())
+                {
+                    SceneManager.SetActiveScene(loadedScene.Scene);
+                    
+                    // Сохраняем и сцену и handle
+                    _loadedScenes[sceneName] = new LoadedSceneInfo
+                    {
+                        SceneInstance = loadedScene,
+                        Handle = handle
+                    };
+                    
+                    _audioManager.PlayGameMusic();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to load scene {sceneName}: {ex.Message}");
+            }
+            finally
+            {
+                LoadingIsDone(true);
+            }
         }
 
         public async UniTask UnloadAsync(string sceneName)
         {
-            cts = new CancellationTokenSource();
-            var scene = _loadedScenes[sceneName];
-            await Addressables.UnloadSceneAsync(scene).WithCancellation(cts.Token).AsUniTask();
-            _loadedScenes.Remove(sceneName);    
-            cts.Cancel(); 
+            if (!_loadedScenes.ContainsKey(sceneName))
+            {
+                Debug.LogWarning($"Scene {sceneName} is not loaded");
+                return;
+            }
+            
+            var sceneInfo = _loadedScenes[sceneName];
+            
+            try
+            {
+                if (sceneInfo.Handle.IsValid())
+                {
+                    await Addressables.UnloadSceneAsync(sceneInfo.Handle);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to unload scene {sceneName}: {ex.Message}");
+            }
+            finally
+            {
+                _loadedScenes.Remove(sceneName);
+            }
         }
 
         public async UniTask RestartScene()
@@ -63,63 +109,96 @@ namespace SceneLoading
 
         private async UniTask LoadNextSceneByLevel(LevelConfig level, AudioManager audioManager)
         {
-            cts = new CancellationTokenSource();
             var sceneName = SceneManager.GetActiveScene().name;
-            audioManager.StopAllSounds(); //audioManager.StopMusic();
+            audioManager.StopAllSounds();
             audioManager.PlayStopMusic();
             _gameData.SetCurrentLevel(level);
+            
             await UniTask.Delay(TimeSpan.FromSeconds(1f)); 
             await UnloadAsync(sceneName);
             await LoadAsync(sceneName);
+            
             audioManager.PlayGameMusic();
-            cts.Cancel();
         }
 
         public bool IsLastLevel(SetupLevelSequence _setupLevelSequence)
         {
-            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count; // всегда 5 будет
+            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count;
             int lastNumber = _setupLevelSequence.CurrentLevelSequence.LevelConfigs[length - 1].LevelNumber;
             if (_gameData.CurrentLevelIndex >= lastNumber && lastNumber == 10)
                 return true;
-            return false;//
+            return false;
         }
         
-        public async UniTask LoadNextScene(AudioManager audioManager, SetupLevelSequence _setupLevelSequence)
+        public async UniTask LoadNewNextScene(AudioManager audioManager, SetupLevelSequence _setupLevelSequence)
         {
             _gameData.OpenNextLevel();
-            //await UniTask.Delay(TimeSpan.FromSeconds(1f));
             _saveProgress.Save();
             int number = _gameData.CurrentLevelIndex;
-            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count; // всегда 5 будет
+            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count;
             Debug.Log("last level number: "+_setupLevelSequence.CurrentLevelSequence.LevelConfigs[length-1].LevelNumber);
     
-            
             if (_gameData.CurrentLevelIndex <= 5)
             {
-                await LoadNextSceneByLevel(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 1], audioManager);
+                await LoadNextSceneByLevel(
+                    _setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 1], 
+                    audioManager);
             }
             else
             {
                 await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);
-                await LoadNextSceneByLevel(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 6],
+                await LoadNextSceneByLevel(
+                    _setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 6],
                     audioManager);
-            }   
-            
-            /*if (_setupLevelSequence.CurrentLevelSequence.LevelConfigs[length-1].LevelNumber == 5)
+            }
+        }
+        public async UniTask LoadNextScene(AudioManager audioManager, SetupLevelSequence _setupLevelSequence)
+        {
+            int number = _gameData.CurrentLevel.LevelNumber + 1;
+            var length = _setupLevelSequence.CurrentLevelSequence.LevelConfigs.Count;
+            Debug.Log("last level number: "+_setupLevelSequence.CurrentLevelSequence.LevelConfigs[length-1].LevelNumber);
+    
+            if (_gameData.CurrentLevelIndex <= 5)
             {
-                await LoadNextSceneByLevel(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 1], audioManager);
+                await LoadNextSceneByLevel(
+                    _setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 1], 
+                    audioManager);
             }
             else
-                await LoadNextSceneByLevel(_setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 6],
-                    audioManager);*/
-
+            {
+                await _setupLevelSequence.Setup(_gameData.CurrentLevelIndex);
+                await LoadNextSceneByLevel(
+                    _setupLevelSequence.CurrentLevelSequence.LevelConfigs[number - 6],
+                    audioManager);
+            }
         }
 
         public void LoadingIsDone(bool value) => loadingScreen.SetActiveScreen(!value);
 
         public void Dispose()
         {
+            // Отменяем все текущие операции
             cts?.Cancel();
+            
+            // Выгружаем все загруженные сцены
+            foreach (var sceneName in _loadedScenes.Keys)
+            {
+                var sceneInfo = _loadedScenes[sceneName];
+                if (sceneInfo.Handle.IsValid())
+                {
+                    try
+                    {
+                        // Синхронная выгрузка при Dispose
+                        Addressables.UnloadSceneAsync(sceneInfo.Handle).WaitForCompletion();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"Failed to unload scene {sceneName} during dispose: {ex.Message}");
+                    }
+                }
+            }
+            
+            _loadedScenes.Clear();
             cts?.Dispose();
         }
     }

@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Game
   m_GUID: 4972ebf088ea89942b130ae7999f04ec
   m_SerializeEntries:
+  - m_GUID: 039a80dd4df9a3d4aa6a95046e9e3202
+    m_Address: FXPrefab4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0988346e2405d08498173bf8d5b809f2
     m_Address: Explosion
     m_ReadOnly: 0
@@ -25,13 +30,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0ee400eee036a0b43a00983b9e1f1388
-    m_Address: Win
+  - m_GUID: 10e1aa6212aa5b04ca552f9b27659aae
+    m_Address: HorizontalRocketConfig
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10e1aa6212aa5b04ca552f9b27659aae
-    m_Address: HorizontalRocketConfig
+  - m_GUID: 126fc0ee701b54f498b69ad2c596cff4
+    m_Address: Match
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -50,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 354d1fb7f05144140b69b359786fac44
+    m_Address: FXPrefab5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d5439e1bd7dbec4792b29f32e604055
     m_Address: TilePrefab
     m_ReadOnly: 0
@@ -60,8 +70,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 598faee821ea45442a1d25491112ad3f
+  - m_GUID: 5342853503117b141b2d79704f4b735f
     m_Address: Loose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 617de087890d3304785189de870d06aa
+    m_Address: FXPrefab7
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -90,8 +105,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9498080a682927347b674128f720648e
+    m_Address: Win
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95aebbccdc8194448adfb8228eae315b
     m_Address: BackgroundTilePrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 986f0e7b7443d5b48a5fce14c529aa56
+    m_Address: FXPrefab6
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -117,11 +142,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e4cf6c3787fec3a40849465f543c01a2
     m_Address: BombConfig
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f2bed7bf223fda64f9382fd4aa59cc41
-    m_Address: Match
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

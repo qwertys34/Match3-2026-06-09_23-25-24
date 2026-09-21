@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Animations;
 using Cysharp.Threading.Tasks;
+using Data;
 using Game.Score;
 using Game.Tiles;
 using ResurcesLoading;
@@ -22,16 +24,25 @@ namespace Game.UI
         private GameProgress _gameProgress;
         private IAnimation _animation;
         private GameResurcesLoader _gameResurcesLoader;
+        private GameData _gameData;
         private List<GameObject> _listTiles = new();
         private List<GameObject> _stashListTiles = new();
         [SerializeField] private List<Image> starsImageList;
         
         [Inject] public void Construct(GameProgress gameProgress, IAnimation animation,
-            GameResurcesLoader gameResurcesLoader)
+            GameResurcesLoader gameResurcesLoader, GameData gameData)
         {
             _gameProgress = gameProgress;
             _animation = animation;
             _gameResurcesLoader = gameResurcesLoader;
+            _gameData = gameData;
+        }
+
+        private void Awake()
+        {
+            foreach(var starImage in starsImageList)
+                starImage.gameObject.SetActive(false);
+            progressUIPanel.SetActive(false);
         }
 
         private async UniTask OnLoadCompleted()
@@ -60,7 +71,7 @@ namespace Game.UI
         
         private async UniTask UpdateGoalTilesToRemove(TileKind tileKind)
         {
-            if (tileKind == TileKind.Blank)
+            if (tileKind == TileKind.Blank) 
             {
                 var tile = _listTiles.FirstOrDefault(tile
                     => tile.GetComponent<Image>().sprite.name == "BlankTileSpriteOne");
@@ -73,7 +84,7 @@ namespace Game.UI
                 var tile = _listTiles.FirstOrDefault(tile
                                     => tile.GetComponent<Image>().sprite.name == "JellyTileSpriteOne");
                 await _animation.HideTileUI(tile);
-                _listTiles.Remove(tile);
+                _listTiles.Remove(tile);       
                 Destroy(tile);
             }
             
@@ -119,6 +130,45 @@ namespace Game.UI
             var blankAmount = _gameProgress.CurrentAmountBlank;
             var jellyAmount = _gameProgress.CurrentAmountJelly;
 
+            if (_gameData.CurrentLevel.LevelNumber == 5)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    if (i < 5 && i != 4)
+                    {
+                        var instance = new GameObject("BlankTile", typeof(RectTransform));
+                        instance.transform.SetParent(parent, false);
+                        var image = instance.AddComponent<Image>();
+                        image.sprite = await _gameResurcesLoader.CreateBlankSprite(1);
+                        image.preserveAspect = true;
+                        _listTiles.Add(instance); 
+                    }
+                    else if (i == 5)
+                        DrawNumber();
+                    else if (i == 4)
+                    {
+                        var instance = new GameObject("JellyTile", typeof(RectTransform));
+                        instance.transform.SetParent(parent, false);
+                        var image = instance.AddComponent<Image>();
+                        image.sprite = await _gameResurcesLoader.CreateJellySprite(1);
+                        image.preserveAspect = true;
+                        _listTiles.Add(instance); 
+                    }
+                    else
+                    {
+                        var instance = new GameObject("JellyTile", typeof(RectTransform));
+                        instance.transform.SetParent(parent, false);
+                        var image = instance.AddComponent<Image>();
+                        image.sprite = await _gameResurcesLoader.CreateJellySprite(1);
+                        image.preserveAspect = true;
+                        instance.gameObject.SetActive(false);
+                        _listTiles.Add(instance); 
+                    }
+                }
+
+                return;
+            }
+
             bool moreThanFive = false;
             for (int i = 0; i < blankAmount; i++)
             {
@@ -152,7 +202,7 @@ namespace Game.UI
                     DrawNumber();
                     moreThanFive = true;
                 }
-                if (i > 4 || moreThanFive) instance.gameObject.SetActive(false);
+                else if (i > 4 || moreThanFive) instance.gameObject.SetActive(false);
             }
         }
 

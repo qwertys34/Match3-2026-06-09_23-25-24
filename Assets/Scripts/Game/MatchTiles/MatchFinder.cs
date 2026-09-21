@@ -19,8 +19,7 @@ namespace Game.MatchTiles
     {
         public List<Tile> TilesToRemove { get; } = new();
         public List<BlankTile> BlankTilesToRemove { get; } = new();
-        public List<Tile> VerticalRocketTilesToRemove { get; } = new();
-        public List<Tile> HorizontalRocketTilesToRemove { get; } = new();
+        public List<Tile> RocketTilesToRemove { get; } = new();
         public MatchResult CurrentMatchResult { get; private set; }
 
         public bool CheckBoardForMatches(Grid grid)
@@ -81,24 +80,17 @@ namespace Game.MatchTiles
                 if (tile != null)
                     tile.SetMatch(false);
             }
-
-            foreach (var vertRocket in VerticalRocketTilesToRemove)
-            {
-                if (vertRocket != null)
-                    vertRocket.SetMatch(false);
-            }
             
-            foreach (var horizRocket in HorizontalRocketTilesToRemove)
+            foreach (var rocket in RocketTilesToRemove)
             {
-                if (horizRocket != null)
-                    horizRocket.SetMatch(false);
+                if (rocket != null)
+                    rocket.SetMatch(false);
             }
             
             // Очищаем все списки
             TilesToRemove.Clear();
             BlankTilesToRemove.Clear();
-            VerticalRocketTilesToRemove.Clear();
-            HorizontalRocketTilesToRemove.Clear();
+            ClearRocketTiles();
             ClearCurrentMatchResult();
         }
         
@@ -226,9 +218,10 @@ namespace Game.MatchTiles
         {
             var checkedPos = position + direction;
             if (!grid.IsValidPosition(checkedPos.x, checkedPos.y)) return;
-                
+            var kind = grid.GetValue(position.x, position.y).tileKind;    
             var tile = grid.GetValue(checkedPos.x, checkedPos.y);
-            if (tile != null && tile.tileKind == TileKind.Blank)
+            if (tile != null && tile.tileKind == TileKind.Blank && kind != TileKind.Bomb
+                && kind != TileKind.RocketHorizontal && kind != TileKind.RocketVertical) 
             {
                 BlankTile blankTile = (BlankTile)tile;
                 if (!BlankTilesToRemove.Contains(blankTile))
@@ -248,20 +241,11 @@ namespace Game.MatchTiles
                 var tile = TilesToRemove[i];
                 if (tile == null) continue;
                 
-                if (tile.tileKind == TileKind.RocketVertical)
+                if (tile.tileKind == TileKind.RocketVertical || tile.tileKind == TileKind.RocketHorizontal)
                 {
-                    if (!VerticalRocketTilesToRemove.Contains(tile))
+                    if (!RocketTilesToRemove.Contains(tile))
                     {
-                        VerticalRocketTilesToRemove.Add(tile);
-                    }
-                    tile.SetMatch(false); // Сбрасываем флаг
-                    TilesToRemove.RemoveAt(i);
-                }
-                else if (tile.tileKind == TileKind.RocketHorizontal)
-                {
-                    if (!HorizontalRocketTilesToRemove.Contains(tile))
-                    {
-                        HorizontalRocketTilesToRemove.Add(tile);
+                        RocketTilesToRemove.Add(tile);
                     }
                     tile.SetMatch(false); // Сбрасываем флаг
                     TilesToRemove.RemoveAt(i);
@@ -272,20 +256,13 @@ namespace Game.MatchTiles
         // Дополнительный метод для очистки Rocket тайлов после их использования
         public void ClearRocketTiles()
         {
-            foreach (var vertRocket in VerticalRocketTilesToRemove)
-            {
-                if (vertRocket != null)
-                    vertRocket.SetMatch(false);
-            }
-            
-            foreach (var horizRocket in HorizontalRocketTilesToRemove)
+            foreach (var horizRocket in RocketTilesToRemove)
             {
                 if (horizRocket != null)
                     horizRocket.SetMatch(false);
             }
             
-            VerticalRocketTilesToRemove.Clear();
-            HorizontalRocketTilesToRemove.Clear();
+            RocketTilesToRemove.Clear();
         }
         #endregion
     }

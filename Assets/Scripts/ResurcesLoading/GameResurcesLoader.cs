@@ -7,6 +7,7 @@ using Game.Tiles;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Random = System.Random;
 
 namespace ResurcesLoading
 {
@@ -43,25 +44,36 @@ namespace ResurcesLoading
         private readonly GameData gameData;
         private CancellationTokenSource _cts;
         
+        // Список для хранения всех handle
+        private readonly List<AsyncOperationHandle> _handles = new List<AsyncOperationHandle>();
+        
         public GameResurcesLoader(GameData gameData) => this.gameData = gameData;
         
         public event Func<UniTask> LoadComplete;
 
-        public void Dispose() => _cts?.Dispose();
+        public void Dispose()
+        {
+            _cts?.Dispose();
+            ReleaseAllHandles();
+        }
         
         public async UniTask Load()
         {
             await LoadSet();
             await LoadTilesPrefab();
             await LoadSprits();
-            LoadComplete?.Invoke();
+            
+            if (LoadComplete != null)
+                await LoadComplete.Invoke();
         }
 
         private async UniTask LoadSet()
         {
             CurrentTileSet = new List<TileConfig>();
             
-            CurrentTileSet = (await Loader<TileSetConfig>("Candy")).Set;
+            var tileSetConfig = await Loader<TileSetConfig>("Candy");
+            if (tileSetConfig != null)
+                CurrentTileSet = tileSetConfig.Set;
             
             BlankConfig = await Loader<TileConfig>("BlankConfig");
             VerticalRocketConfig = await Loader<TileConfig>("VerticalRocketConfig");
@@ -75,12 +87,15 @@ namespace ResurcesLoading
         {
             var asyncOperationHandle = Addressables.LoadAssetAsync<T>(key);
             await asyncOperationHandle.ToUniTask();
+            
             if (asyncOperationHandle.Status == AsyncOperationStatus.Succeeded)
             {
-                var result = asyncOperationHandle.Result;
-                Addressables.Release(asyncOperationHandle);
-                return result;
+                // Сохраняем handle для последующего освобождения
+                _handles.Add(asyncOperationHandle);
+                return asyncOperationHandle.Result;
             }
+            
+            Debug.LogError($"Failed to load asset: {key}");
             return default;
         }
 
@@ -94,6 +109,7 @@ namespace ResurcesLoading
                 _ => null
             };
         }
+        
         public async UniTask<Sprite> CreateJellySprite(int state)
         {
             return state switch
@@ -107,7 +123,8 @@ namespace ResurcesLoading
 
         private async UniTask LoadTilesPrefab()
         {
-            var key = gameData.CurrentLevel.LevelNumber;
+            //var key = gameData.CurrentLevel.LevelNumber;
+            var key = UnityEngine.Random.Range(1, 8);
             BackgroundTilePrefab = await Loader<GameObject>("BackgroundTilePrefab");
             TilePrefab = await Loader<GameObject>("TilePrefab");
 
@@ -133,7 +150,8 @@ namespace ResurcesLoading
                               && handle.Result != null 
                               && handle.Result.Count > 0;
         
-                Addressables.Release(handle);
+                // Сохраняем и этот handle
+                _handles.Add(handle);
                 return exists;
             }
             catch (Exception ex)
@@ -153,6 +171,18 @@ namespace ResurcesLoading
             // jelly
             JellyTileSpriteOne = await Loader<Sprite>("JellyTileSpriteOne");
             JellyTileSpriteTwo = await Loader<Sprite>("JellyTileSpriteTwo");
+        }
+        
+        private void ReleaseAllHandles()
+        {
+            foreach (var handle in _handles)
+            {
+                if (handle.IsValid())
+                {
+                    Addressables.Release(handle);
+                }
+            }
+            _handles.Clear();
         }
     }
 }

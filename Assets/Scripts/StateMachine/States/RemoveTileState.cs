@@ -11,6 +11,7 @@ using Game.Score;
 using Game.Tiles;
 using Game.Utils;
 using ResurcesLoading;
+using UnityEngine;
 using Grid = Game.GridSystem.Grid;
 
 namespace StateMachine.States
@@ -26,10 +27,10 @@ namespace StateMachine.States
         private AudioManager _audioManager;
         private FXPool _fxPool;
         private GameBoard _gameBoard;
-        private GameResurcesLoader  _gameResurcesLoader;
+        private GameResurcesLoader _gameResurcesLoader;
         
-        public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation,  MatchFinder matchFinder,
-            ScoreCalculator scoreCalculator,  AudioManager audioManager, FXPool fxPool, GameBoard gameBoard,
+        public RemoveTileState(IStateSwitcher switcher, Grid grid, IAnimation animation, MatchFinder matchFinder,
+            ScoreCalculator scoreCalculator, AudioManager audioManager, FXPool fxPool, GameBoard gameBoard,
             GameResurcesLoader gameResurcesLoader)
         {
             _switcher = switcher;
@@ -47,31 +48,44 @@ namespace StateMachine.States
         {
             _cts = new CancellationTokenSource();
             _scoreCalculator.CalculateScoreToAdd(_matchFinder.CurrentMatchResult.MatchDirection);
-            await RemoveAnyTiles(_matchFinder.TilesToRemove, _matchFinder.BlankTilesToRemove, _matchFinder.VerticalRocketTilesToRemove,
-                _matchFinder.HorizontalRocketTilesToRemove);
+            await RemoveAnyTiles(_matchFinder.TilesToRemove, _matchFinder.BlankTilesToRemove, _matchFinder.RocketTilesToRemove);
             _switcher.SwitchState<RefillGridState>();
         }
 
-        private async UniTask RemoveAnyTiles(List<Tile> tilesToRemove, List<BlankTile> blankTilesToRemove,
-            List<Tile> verticalRocketTilesToRemove, List<Tile> horizontalRocketTilesToRemove)
+        private async UniTask RemoveRocketTile(Tile tile)
         {
-            foreach (var rocketTile in verticalRocketTilesToRemove)
+            if (tile.tileKind == TileKind.RocketHorizontal)
             {
-                await ((VerticalRocketTile)rocketTile).Run(_grid, _animation, _scoreCalculator, _fxPool, _matchFinder,
-                    _gameBoard, _audioManager, _gameResurcesLoader, horizontalRocketTilesToRemove);
+                await ((HorizontalRocketTile)tile).Run(_grid, _animation, _scoreCalculator, _fxPool,
+                    _matchFinder, _gameBoard, _audioManager, _gameResurcesLoader);
+            }
+            else if (tile.tileKind == TileKind.RocketVertical)
+            {
+                await ((VerticalRocketTile)tile).Run(_grid, _animation, _scoreCalculator, _fxPool,
+                    _matchFinder, _gameBoard, _audioManager, _gameResurcesLoader);
+            }
+        }
+        
+        private async UniTask RemoveAnyTiles(List<Tile> tilesToRemove, List<BlankTile> blankTilesToRemove, List<Tile> RocketTilesToRemove)
+        {
+            // Сначала обрабатываем все ракеты
+            var amountRocketTile = RocketTilesToRemove.Count;
+            if (amountRocketTile > 0)
+            {
+                Debug.Log($"Amount elements: {amountRocketTile}");
+                await RemoveRocketTile(RocketTilesToRemove[0]);
             }
             
-            foreach (var rocketTile in horizontalRocketTilesToRemove)
-            {
-                await ((HorizontalRocketTile)rocketTile).Run(_grid, _animation, _scoreCalculator, _fxPool, _matchFinder,
-                    _gameBoard, _audioManager, _gameResurcesLoader, verticalRocketTilesToRemove);
-            }
             
+            
+            // Затем обрабатываем обычные тайлы
             foreach (var tile in tilesToRemove)
             {
-                if (tile.tileKind == TileKind.Jelly) // тут важно именно поле проверять
+                if (tile == null || tile.gameObject == null) continue;
+                
+                if (tile.tileKind == TileKind.Jelly) 
                 {
-                    var  jellyTile = (JellyTile)tile;
+                    var jellyTile = (JellyTile)tile;
                     jellyTile.ChangeState(jellyTile.JellyTransform, _gameResurcesLoader);
                     if (jellyTile.CanAlive())
                     {
@@ -79,8 +93,7 @@ namespace StateMachine.States
                         await _animation.ShakeAnimate(tile.transform, 0.1f, Ease.InQuint);
                         var amScore = _scoreCalculator.CalculateScore(_matchFinder.CurrentMatchResult.MatchDirection);
                         _fxPool.GetFX(tile.transform.position, _gameBoard.transform, amScore);
-                        // fx скорее всего не нужен, если я не буду конечно давать очков за ломку jelly
-                        if (jellyTile.IsSimpleTile()) // если jelly на тайле уже нет
+                        if (jellyTile.IsSimpleTile())
                             _scoreCalculator.CalculateAmountRemainingTiles(TileKind.Jelly); 
                         continue;
                     }
@@ -91,15 +104,19 @@ namespace StateMachine.States
                         _fxPool, _gameBoard, _audioManager, _matchFinder);
                     continue;
                 }
+                
                 _audioManager.PlayRemove();
                 _grid.SetValue(tile.transform.position, null);
                 await _animation.HideTile(tile.gameObject);
                 var amountScore = _scoreCalculator.CalculateScore(_matchFinder.CurrentMatchResult.MatchDirection);
                 _fxPool.GetFX(tile.transform.position, _gameBoard.transform, amountScore);
-                // fadsfl;ds
             }
+            
+            // Обрабатываем BlankTile
             foreach (var blankTile in blankTilesToRemove)
             {
+                if (blankTile == null || blankTile.gameObject == null) continue;
+                
                 await _animation.ShakeAnimate(blankTile.transform, 0.1f, Ease.InQuint);
                 blankTile.ChangeState(_gameResurcesLoader);
                 if (blankTile.CanAlive()) continue;
@@ -108,8 +125,8 @@ namespace StateMachine.States
                 _audioManager.PlayRemove();
                 _grid.SetValue(blankTile.transform.position, null);
                 await _animation.HideTile(blankTile.gameObject);
-                // fadsfl;ds
             }
+            
             _cts.Cancel();
         }
         

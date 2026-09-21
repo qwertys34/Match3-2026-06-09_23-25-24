@@ -37,10 +37,10 @@ namespace Audio
         
         public void PlayClick() => PlayNormalPitch(click);
         public void PlayDeselect() => PlayNormalPitch(deselect);
-        public void PlayMatch() => PlayNormalPitch(match);
+        public void PlayMatch() => PlayRandomPitch(match);
         public void PlayNoMatch() => PlayNormalPitch(noMatch);
         public void PlayExplosion() => PlayNormalPitch(explosion);
-        public void PlayWhoosh() => PlayRandomPitch(whoosh);
+        public void PlayWhoosh(){} /*=> PlayRandomPitch(whoosh);*/
         public void PlayPop() => PlayRandomPitch(pop);
         public void PlayStopMusic() => PlayNormalPitch(stopMusic);
         public void PlayRemove() => PlayNormalPitch(remove);

@@ -42,7 +42,7 @@ namespace Game.Utils
                 position, quaternion.identity, parent);
             _items.Add(FX.gameObject);
             FX.GetComponent<FXMatchTile>().amountText.text = amountScore.ToString();
-            return FX.gameObject;//
+            return FX.gameObject;
         }
     }
 }

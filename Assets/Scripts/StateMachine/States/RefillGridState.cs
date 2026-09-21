@@ -44,19 +44,18 @@ namespace StateMachine.States
 
         public async void Enter()
         {
-            Debug.Log("пошло дело");//
             await TileFall();
             await RefillTiles();
             if (_matchFinder.CheckBoardForMatches(_grid))
             {
                 _matchFinder.CheckToBlankTiles(_grid);
+                _matchFinder.CheckOnRocketTiles(_grid);
                 _stateSwitcher.SwitchState<RemoveTileState>();
                 _audioManager.PlayMatch();
             }
             else
             {
                 CheckEndGame();
-                _audioManager.PlayNoMatch();
             }
         }
 

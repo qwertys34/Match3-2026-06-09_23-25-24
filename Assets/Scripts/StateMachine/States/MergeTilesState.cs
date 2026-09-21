@@ -106,7 +106,7 @@ namespace StateMachine.States
                 await _animation.AnimateSuperCandyMatch(superCandyTile.transform, 
                     superCandyTile.GetComponent<SpriteRenderer>(), sizeSupCandy, 0.3f); 
                 sizeSupCandy = Mathf.Min(1.5f, sizeSupCandy + 0.05f);
-                var amountScore = _scoreCalculator.CalculateScore(_matchFinder.CurrentMatchResult.MatchDirection);
+                var amountScore = _scoreCalculator.AddScoreForInteractabel(TileKind.Normal);
                 _fxPool.GetFX(matchTile.transform.position, _gameBoard.transform, amountScore);
                 await _animation.HideTile(matchTile.gameObject);
             }

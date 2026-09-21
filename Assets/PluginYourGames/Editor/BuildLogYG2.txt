@@ -1,0 +1,3 @@
+﻿Build path: D:/BuildProjects/CandyStrikePC/CandyStrike.exe
+Build number: 5
+PluginYG version: 2.0092

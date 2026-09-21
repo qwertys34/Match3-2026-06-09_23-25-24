@@ -6,6 +6,7 @@ using Game.Score;
 using Game.Tiles;
 using Game.UI;
 using Game.Utils;
+using Input;
 using ResurcesLoading;
 using UnityEngine;
 using VContainer;
@@ -41,6 +42,7 @@ namespace DI
             builder.Register<BackgroundTilesSetup>(Lifetime.Singleton);
             builder.Register<FXPool>(Lifetime.Singleton);
             builder.Register<GameResurcesLoader>(Lifetime.Singleton);
+            builder.Register<InputReader>(Lifetime.Singleton);
             
         }
     }
